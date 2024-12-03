@@ -1,0 +1,68 @@
+<div class="bg-white rounded-xl shadow-lg overflow-hidden max-h-screen flex flex-col h-[600px]">
+  <!-- Cabeçalho do Chat -->
+  <div class="text-xl text-text-muted p-4 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-4l-4 4z" />
+      </svg>
+      <div>
+        <h2 class="text-xl font-semibold">Assistente CuponAI</h2>
+        <span class="text-sm text-text-muted">Encontre as melhores ofertas</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Área de Mensagens -->
+  <div class="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50" #chatContainer>
+    <div *ngFor="let message of messages" 
+         class="flex w-full mb-4"
+         [ngClass]="message.sender === 'user' ? 'justify-end' : 'justify-start'">
+      <div class="max-w-[70%]">
+        <div class="px-4 py-2 rounded-2xl shadow-sm"
+             [ngClass]="message.sender === 'user' ? 
+                       'bg-primary text-white' : 
+                       'bg-white text-gray-800'">
+          {{ message.text }}
+        </div>
+        <div class="text-xs text-gray-500 mt-1"
+             [ngClass]="message.sender === 'user' ? 'text-right' : 'text-left'">
+          {{ message.sender === 'user' ? 'Você' : 'CuponAI' }}
+        </div>
+      </div>
+    </div>
+    
+    <div *ngIf="isLoading" class="flex justify-start">
+      <div class="bg-white shadow-sm text-gray-800 rounded-2xl py-2 px-4">
+        <div class="flex gap-1">
+          <span class="animate-bounce">.</span>
+          <span class="animate-bounce delay-100">.</span>
+          <span class="animate-bounce delay-200">.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Área de Input -->
+  <div class="border-t bg-white p-4">
+    <div class="flex gap-2">
+      <input 
+        #messageInput
+        [(ngModel)]="newMessage" 
+        (keyup.enter)="sendMessage()"
+        [disabled]="isLoading"
+        placeholder="Digite sua dúvida sobre ofertas..."
+        class="flex-1 px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none bg-gray-50"
+      />
+      <button 
+        (click)="sendMessage()"
+        [disabled]="isLoading || !newMessage.trim()"
+        class="bg-primary text-white px-6 py-3 rounded-xl hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center gap-2"
+      >
+        <span>Enviar</span>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>

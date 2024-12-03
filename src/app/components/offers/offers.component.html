@@ -1,0 +1,68 @@
+<div class="bg-white rounded-xl overflow-hidden h-fit p-3">
+  <div class="text-white flex items-center justify-between  pb-4">
+    <h2 class="text-xl text-text-muted">Ofertas Encontradas</h2>
+    <span class="text-sm text-text-muted">Melhores Preços</span>
+  </div>
+
+  <div class="h-[600px] overflow-y-auto p-4 bg-background-light">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+     <div *ngFor="let offer of offers" 
+          class="bg-white rounded-xl overflow-hidden hover:shadow-medium transition-shadow flex flex-col ">
+               <div class="relative aspect-[4/3] overflow-hidden group">
+    <!-- Fallback para imagem não carregada -->
+    <div class="absolute inset-0 bg-gray-100 animate-pulse"></div>
+    <img [src]="offer.imageUrl" 
+         alt="{{ offer.product }}"
+         class="absolute inset-0 w-full h-full object-cover object-center 
+                transition-all duration-300 group-hover:scale-110
+                blur-0 hover:blur-0"
+         loading="lazy"
+         (error)="handleImageError($event)"
+    >
+  
+    <!-- Gradiente e overlay -->
+    <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+  
+    <!-- Badge de desconto -->
+    <div class="absolute top-2 right-2">
+      <span class="bg-accent-dark text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
+        {{ getDiscountPercentage(offer.originalPrice, offer.discountedPrice) }}% OFF
+      </span>
+    </div>
+
+    <!-- Marca d'água -->
+    <div class="absolute bottom-2 left-2 text-white text-xs opacity-70">
+      <span class="bg-black/30 px-2 py-1 rounded backdrop-blur-sm">
+        CUPONOW
+      </span>
+    </div>
+</div>
+     
+    <!-- Content wrapper with flex-col and h-full -->
+    <div class="p-4 flex flex-col h-full">
+       <h3 class="text-xl font-semibold text-text-DEFAULT">{{ offer.product }}</h3>
+       <p class="text-text-muted line-clamp-3 flex-grow">{{ offer.description }}</p>
+        
+       <div class="mt-auto">
+           <div class="flex items-center justify-between mt-2">
+               <span class="text-text-muted line-through text-sm">
+                   {{ offer.originalPrice | currency }}
+               </span>
+               <span class="text-accent-dark font-bold text-lg">
+                   {{ offer.discountedPrice | currency }}
+               </span>
+           </div>
+            
+           <button 
+               class="w-full bg-primary text-white py-2 px-4 
+                      rounded-xl hover:bg-primary-dark 
+                      transition-colors mt-2 
+                      shadow-soft hover:shadow-medium">
+               Ver Oferta
+           </button>
+       </div>
+    </div>
+     </div>
+   </div>
+ </div>
+</div>

@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  -ms-overflow-style: none;  /* For Internet Explorer and Edge */
+  scrollbar-width: none; 
+}
+
+::-webkit-scrollbar {
+  /* width: 8px; */
+  display: none;
+}
+/* 
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #1A5F7A;
+} */
