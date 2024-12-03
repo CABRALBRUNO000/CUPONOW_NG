@@ -1,5 +1,1 @@
-
-export const environment = {
-  production: false,
-  openAiKey:'',
-};
+export const environment = {};
