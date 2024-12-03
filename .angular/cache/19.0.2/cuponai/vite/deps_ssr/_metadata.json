@@ -1,0 +1,217 @@
+{
+  "hash": "3547a448",
+  "configHash": "f2181651",
+  "lockfileHash": "e8819a4c",
+  "browserHash": "808d2dee",
+  "optimized": {
+    "@angular/common": {
+      "src": "../../../../../../node_modules/@angular/common/fesm2022/common.mjs",
+      "file": "@angular_common.js",
+      "fileHash": "edc54b18",
+      "needsInterop": false
+    },
+    "@angular/common/http": {
+      "src": "../../../../../../node_modules/@angular/common/fesm2022/http.mjs",
+      "file": "@angular_common_http.js",
+      "fileHash": "026a16c9",
+      "needsInterop": false
+    },
+    "@angular/core": {
+      "src": "../../../../../../node_modules/@angular/core/fesm2022/core.mjs",
+      "file": "@angular_core.js",
+      "fileHash": "f5c1b329",
+      "needsInterop": false
+    },
+    "@angular/forms": {
+      "src": "../../../../../../node_modules/@angular/forms/fesm2022/forms.mjs",
+      "file": "@angular_forms.js",
+      "fileHash": "2f9d3563",
+      "needsInterop": false
+    },
+    "@angular/platform-browser": {
+      "src": "../../../../../../node_modules/@angular/platform-browser/fesm2022/platform-browser.mjs",
+      "file": "@angular_platform-browser.js",
+      "fileHash": "160e56e7",
+      "needsInterop": false
+    },
+    "@angular/platform-server": {
+      "src": "../../../../../../node_modules/@angular/platform-server/fesm2022/platform-server.mjs",
+      "file": "@angular_platform-server.js",
+      "fileHash": "61314dbd",
+      "needsInterop": false
+    },
+    "@angular/router": {
+      "src": "../../../../../../node_modules/@angular/router/fesm2022/router.mjs",
+      "file": "@angular_router.js",
+      "fileHash": "60835a4c",
+      "needsInterop": false
+    },
+    "@angular/ssr": {
+      "src": "../../../../../../node_modules/@angular/ssr/fesm2022/ssr.mjs",
+      "file": "@angular_ssr.js",
+      "fileHash": "3444d58a",
+      "needsInterop": false
+    },
+    "@angular/ssr/node": {
+      "src": "../../../../../../node_modules/@angular/ssr/fesm2022/node.mjs",
+      "file": "@angular_ssr_node.js",
+      "fileHash": "adc40068",
+      "needsInterop": false
+    },
+    "@langchain/core/prompts": {
+      "src": "../../../../../../node_modules/@langchain/core/prompts.js",
+      "file": "@langchain_core_prompts.js",
+      "fileHash": "06d4ee9d",
+      "needsInterop": false
+    },
+    "@langchain/openai": {
+      "src": "../../../../../../node_modules/@langchain/openai/index.js",
+      "file": "@langchain_openai.js",
+      "fileHash": "5fc51ca1",
+      "needsInterop": false
+    },
+    "dotenv": {
+      "src": "../../../../../../node_modules/dotenv/lib/main.js",
+      "file": "dotenv.js",
+      "fileHash": "940aaf04",
+      "needsInterop": true
+    },
+    "express": {
+      "src": "../../../../../../node_modules/express/index.js",
+      "file": "express.js",
+      "fileHash": "da7ae9db",
+      "needsInterop": true
+    },
+    "langchain/chains": {
+      "src": "../../../../../../node_modules/langchain/chains.js",
+      "file": "langchain_chains.js",
+      "fileHash": "4454ee1d",
+      "needsInterop": false
+    },
+    "langchain/memory": {
+      "src": "../../../../../../node_modules/langchain/memory.js",
+      "file": "langchain_memory.js",
+      "fileHash": "edf8e99c",
+      "needsInterop": false
+    },
+    "rxjs": {
+      "src": "../../../../../../node_modules/rxjs/dist/cjs/index.js",
+      "file": "rxjs.js",
+      "fileHash": "57b05b95",
+      "needsInterop": true
+    }
+  },
+  "chunks": {
+    "api_chain-6ROY2HVI": {
+      "file": "api_chain-6ROY2HVI.js"
+    },
+    "prompt-BHN3OU73": {
+      "file": "prompt-BHN3OU73.js"
+    },
+    "few_shot-NALSTAKO": {
+      "file": "few_shot-NALSTAKO.js"
+    },
+    "fileFromPath-PJG55QM4": {
+      "file": "fileFromPath-PJG55QM4.js"
+    },
+    "xhr2-3TESS4KC": {
+      "file": "xhr2-3TESS4KC.js"
+    },
+    "llm_chain-F2VP3XWD": {
+      "file": "llm_chain-F2VP3XWD.js"
+    },
+    "sequential_chain-NKX5LEIQ": {
+      "file": "sequential_chain-NKX5LEIQ.js"
+    },
+    "combine_docs_chain-RCH4I3OO": {
+      "file": "combine_docs_chain-RCH4I3OO.js"
+    },
+    "vector_db_qa-FHKMWKLF": {
+      "file": "vector_db_qa-FHKMWKLF.js"
+    },
+    "chunk-QYESU2DT": {
+      "file": "chunk-QYESU2DT.js"
+    },
+    "chunk-EOJTMDDF": {
+      "file": "chunk-EOJTMDDF.js"
+    },
+    "chunk-RUYZZJ26": {
+      "file": "chunk-RUYZZJ26.js"
+    },
+    "chunk-PQXCRRQ6": {
+      "file": "chunk-PQXCRRQ6.js"
+    },
+    "chunk-OA7W4K4F": {
+      "file": "chunk-OA7W4K4F.js"
+    },
+    "chunk-JYUZCYPY": {
+      "file": "chunk-JYUZCYPY.js"
+    },
+    "chunk-NDTJ5GJZ": {
+      "file": "chunk-NDTJ5GJZ.js"
+    },
+    "chunk-GFBVB7YW": {
+      "file": "chunk-GFBVB7YW.js"
+    },
+    "chunk-M6VQX7N6": {
+      "file": "chunk-M6VQX7N6.js"
+    },
+    "chunk-VP7I2KXP": {
+      "file": "chunk-VP7I2KXP.js"
+    },
+    "chunk-QXUYJWH2": {
+      "file": "chunk-QXUYJWH2.js"
+    },
+    "chunk-EPH7JEG4": {
+      "file": "chunk-EPH7JEG4.js"
+    },
+    "chunk-GS33LITW": {
+      "file": "chunk-GS33LITW.js"
+    },
+    "chunk-OF3ZY4ZC": {
+      "file": "chunk-OF3ZY4ZC.js"
+    },
+    "chunk-HILVLBDT": {
+      "file": "chunk-HILVLBDT.js"
+    },
+    "chunk-EDF4OTNK": {
+      "file": "chunk-EDF4OTNK.js"
+    },
+    "chunk-A6ZYBSJS": {
+      "file": "chunk-A6ZYBSJS.js"
+    },
+    "chunk-R7TBAC34": {
+      "file": "chunk-R7TBAC34.js"
+    },
+    "chunk-APP2RMRU": {
+      "file": "chunk-APP2RMRU.js"
+    },
+    "chunk-HLPOOUZL": {
+      "file": "chunk-HLPOOUZL.js"
+    },
+    "chunk-UATKF2ZA": {
+      "file": "chunk-UATKF2ZA.js"
+    },
+    "chunk-XXTAYTVK": {
+      "file": "chunk-XXTAYTVK.js"
+    },
+    "chunk-NSI3BOGS": {
+      "file": "chunk-NSI3BOGS.js"
+    },
+    "chunk-FLQJJ5DW": {
+      "file": "chunk-FLQJJ5DW.js"
+    },
+    "chunk-2R2XAUL4": {
+      "file": "chunk-2R2XAUL4.js"
+    },
+    "chunk-4TXUWKWD": {
+      "file": "chunk-4TXUWKWD.js"
+    },
+    "chunk-TASRQ32Q": {
+      "file": "chunk-TASRQ32Q.js"
+    },
+    "chunk-LKDWXENB": {
+      "file": "chunk-LKDWXENB.js"
+    }
+  }
+}
