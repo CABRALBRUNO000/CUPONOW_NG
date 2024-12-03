@@ -6,7 +6,7 @@ tmp/
 out-tsc/
 *.log
 *.tsbuildinfo
-*.env
+.env
 # Environment files
 # src/environments/environment.ts
 
