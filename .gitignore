@@ -19,3 +19,4 @@ out-tsc/
 *.sln
 *.sw?
 .angular/cache
+.vercel

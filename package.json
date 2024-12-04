@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "node -r dotenv/config mynode.js && ng serve",
+    "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
@@ -32,6 +32,7 @@
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "uuid": "^11.0.3",
+    "vercel": "^39.1.2",
     "zone.js": "~0.15.0"
   },
   "devDependencies": {

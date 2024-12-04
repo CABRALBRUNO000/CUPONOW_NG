@@ -1,1 +1,3 @@
-export const environment = {openAiKey: ''};
+export const environment = {    
+  openAiKey: '', 
+};
