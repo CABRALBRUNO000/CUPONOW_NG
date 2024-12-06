@@ -5,6 +5,8 @@ export interface Offer {
     imageUrl: string;
     originalPrice: number;
     discountedPrice: number;
+    productUrl?: string;
+    cuponCode?:string
   }
 
   
