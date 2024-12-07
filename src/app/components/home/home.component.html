@@ -2,31 +2,81 @@
 
 
 <div class="w-full bg-background-banner min-h-screen">
-    <!-- Hero Section -->
-    <section class="bg-gradient-primary text-white py-8 sm:py-12 md:py-20 shadow-medium">
-      <div class="w-full max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
-        <div class="max-w-4xl mx-auto text-center">
-          <h1 class="text-2xl sm:text-3xl md:text-5xl font-bold mb-3 md:mb-4 leading-tight">
-            Descubra as Melhores Ofertas com IA
-          </h1>
-          <p class="text-base sm:text-lg md:text-xl mb-6 md:mb-8 px-2 md:px-4 text-background-light/90">
-            Use nosso assistente inteligente para encontrar exatamente o que você
-            procura com os melhores preços!
-          </p>
-          <button
-            class="bg-white text-primary-dark px-4 sm:px-6 md:px-8 py-2 md:py-3 rounded-xl font-semibold 
-            hover:bg-opacity-90 transition-all transform hover:scale-105 
-            shadow-soft hover:shadow-medium text-sm sm:text-base"
-          >
-            Começar Agora
-          </button>
+  <!-- Hero Section -->
+  <section class="relative bg-gradient-primary text-white py-12 md:py-20 w-full">
+    <div class="absolute inset-0 bg-primary/10 backdrop-blur-xs"></div>
+    <div class="relative w-full px-4">
+      <!-- Logo/Brand -->
+      <div class="mb-8 md:mb-12 text-center">
+        <h1 class="font-ubuntu text-4xl md:text-6xl font-bold tracking-tight mb-2">CuponAI</h1>
+        <div class="h-1 w-24 bg-secondary mx-auto rounded-full"></div>
+      </div>
+      
+      <!-- Hero Content -->
+      <div class="max-w-4xl mx-auto text-center">
+        <h2 class="text-2xl md:text-4xl font-lato font-bold mb-4 md:mb-6 leading-tight">
+          Descubra as Melhores Ofertas com IA
+        </h2>
+        <p class="text-base md:text-lg mb-6 md:mb-8 text-background-light/90 font-light max-w-2xl mx-auto px-2">
+          Use nosso assistente inteligente para encontrar exatamente o que você
+          procura com os melhores preços!
+        </p>
+        <button class="group bg-white text-primary hover:bg-primary hover:text-white px-6 md:px-8 py-3 md:py-4 rounded-2xl 
+          font-semibold transition-all duration-300 transform hover:scale-105 
+          shadow-medium hover:shadow-lg flex items-center gap-2 mx-auto">
+          <span>Começar Agora</span>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </section>
+  <!-- Main Content -->
+  <div class="w-full max-w-full mx-auto px-2 sm:px-4 py-4 bg-background-dark">
+    <app-mobile-chat></app-mobile-chat>
+  </div>
+    <footer class="bg-background-dark py-12">
+    <div class="container mx-auto px-4 md:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div class="space-y-4">
+          <h3 class="font-ubuntu text-2xl font-bold text-primary">CuponAI</h3>
+          <p class="text-text-muted">Sua plataforma inteligente de economia</p>
+        </div>
+        
+        <div class="space-y-4">
+          <h4 class="font-semibold text-text-default">Links Rápidos</h4>
+          <ul class="space-y-2 text-text-muted">
+            <li><a href="#" class="hover:text-primary transition-colors">Home</a></li>
+            <li><a href="#" class="hover:text-primary transition-colors">Como Funciona</a></li>
+            <li><a href="#" class="hover:text-primary transition-colors">Ofertas</a></li>
+          </ul>
+        </div>
+
+        <div class="space-y-4">
+          <h4 class="font-semibold text-text-default">Suporte</h4>
+          <ul class="space-y-2 text-text-muted">
+            <li><a href="#" class="hover:text-primary transition-colors">FAQ</a></li>
+            <li><a href="#" class="hover:text-primary transition-colors">Contato</a></li>
+            <li><a href="#" class="hover:text-primary transition-colors">Política de Privacidade</a></li>
+          </ul>
+        </div>
+
+        <div class="space-y-4">
+          <h4 class="font-semibold text-text-default">Newsletter</h4>
+          <p class="text-text-muted">Receba as melhores ofertas</p>
+          <div class="flex gap-2">
+            <input type="email" placeholder="Seu e-mail" class="flex-grow px-4 py-2 rounded-xl border focus:ring-2 focus:ring-primary focus:border-primary outline-none">
+            <button class="bg-primary text-white px-4 py-2 rounded-xl hover:bg-primary-dark transition-colors">
+              Assinar
+            </button>
+          </div>
         </div>
       </div>
-    </section>
-    <!-- Main Content -->
-    <div class="w-full max-w-full mx-auto px-2 sm:px-4 py-4 bg-background-dark">
-      <app-mobile-chat></app-mobile-chat>
+
+      <div class="mt-12 pt-8 border-t border-gray-200 text-center text-text-muted">
+        <p>© 2024 CuponAI. Todos os direitos reservados.</p>
+      </div>
     </div>
-    
-  </div> 
-  
+  </footer>
+</div> 
