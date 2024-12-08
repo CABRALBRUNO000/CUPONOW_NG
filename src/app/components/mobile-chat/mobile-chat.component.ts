@@ -5,6 +5,7 @@ import { Router, RouterModule } from '@angular/router';
 import { Message } from '../../models/message.model';
 import { Offer } from '../../models/offer.model';
 import { AiChatMobileService } from '../../services/ai-chat-mobile.service';
+import { LoggerService } from '../../services/logger.service';
 interface ChatMessage extends Message {
   products?: Offer[];
 }
@@ -42,7 +43,9 @@ export class MobileChatComponent implements OnInit {
 
   constructor(
     private aiChatMobileService: AiChatMobileService,
-    private router: Router
+    private router: Router,
+    private logger: LoggerService
+
   ) {}
 
 
@@ -57,6 +60,8 @@ export class MobileChatComponent implements OnInit {
       ...msg,
       products: []
     }));
+    this.logger.info('Histórico de mensagens carregado', this.messages);
+
   }
 
   private subscribeToProducts(): void {
@@ -71,12 +76,17 @@ export class MobileChatComponent implements OnInit {
 
     this.addUserMessage(trimmedMessage);
     this.isLoading = true;
+    this.logger.info('Enviando mensagem:', trimmedMessage);
 
     try {
       const response = await this.aiChatMobileService.sendMessage(trimmedMessage);
       this.addAiMessage(response);
+      this.logger.info('Resposta recebida:', response);
+
     } catch (error) {
       this.handleError();
+      this.logger.error('Erro ao processar mensagem', error);
+
     } finally {
       this.finalizeSendMessage();
     }
@@ -109,10 +119,12 @@ export class MobileChatComponent implements OnInit {
     setTimeout(() => this.messageInput.nativeElement.focus(), 0);
   }
 
-  scrollToBottom(): void {
+  private scrollToBottom(): void {
     try {
-      this.chatContainer.nativeElement.scrollTop = this.chatContainer.nativeElement.scrollHeight;
-    } catch(err) {}
+      setTimeout(() => {
+        this.chatContainer.nativeElement.scrollTop = this.chatContainer.nativeElement.scrollHeight;
+      }, 100);
+    } catch (err) {}
   }
 
   formatPrice(price: number): string {
