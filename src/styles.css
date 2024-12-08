@@ -16,6 +16,10 @@ html, body {
   /* width: 8px; */
   display: none;
 }
+
+html {
+  scroll-behavior: smooth;
+}
 /* 
 ::-webkit-scrollbar-track {
   background: #f1f1f1;
@@ -29,4 +33,64 @@ html, body {
 ::-webkit-scrollbar-thumb:hover {
   background: #1A5F7A;
 } */
+.bg-gradient-primary {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(
+    125deg,
+    #2563eb 0%,
+    #3b82f6 25%,
+    #1d4ed8 50%,
+    #4f46e5 75%,
+    #2563eb 100%
+  );
+  background-size: 400% 400%;
+  animation: gradientFlow 12s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
 
+/* .bg-gradient-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    -45deg,
+    rgba(37, 99, 235, 0.15) 0%,
+    rgba(59, 130, 246, 0.15) 25%,
+    rgba(29, 78, 216, 0.15) 50%,
+    rgba(79, 70, 229, 0.15) 75%,
+    rgba(37, 99, 235, 0.15) 100%
+  );
+  background-size: 200% 200%;
+  animation: gradientShimmer 8s ease infinite;
+  filter: blur(10px);
+}
+
+.bg-gradient-primary::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    circle at center,
+    transparent 0%,
+    rgba(0, 0, 0, 0.1) 100%
+  );
+}
+
+@keyframes gradientFlow {
+  0% { background-position: 0% 50% }
+  25% { background-position: 50% 100% }
+  50% { background-position: 100% 50% }
+  75% { background-position: 50% 0% }
+  100% { background-position: 0% 50% }
+}
+
+@keyframes gradientShimmer {
+  0% { background-position: 200% 0% }
+  100% { background-position: -200% 0% }
+} */

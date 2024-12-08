@@ -21,3 +21,44 @@
     background-color: #ffffff;
     overflow-y: auto;
   }
+
+
+  .bg-gradient-primary {
+    background: linear-gradient(-45deg, #1e40af, #3b82f6, #1d4ed8, #2563eb);
+    background-size: 400% 400%;
+    animation: waveGradient 10s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  }
+  
+  @keyframes waveGradient {
+    0% {
+      background-position: 0% 0%;
+    }
+    50% {
+      background-position: 100% 100%;
+    }
+    100% {
+      background-position: 0% 0%;
+    }
+  }
+  
+
+  /* .bg-gradient-primary {
+    background: linear-gradient(-45deg, #1e40af, #3b82f6, #1d4ed8, #2563eb);
+    background-size: 400% 400%;
+    animation: gradientFlow 15s ease infinite;
+  }
+  
+  @keyframes gradientFlow {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+  
+  
+   */

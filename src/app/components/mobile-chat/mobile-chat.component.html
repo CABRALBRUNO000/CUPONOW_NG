@@ -1,29 +1,47 @@
 
-<div class="flex flex-col min-h-screen max-h-screen bg-gray-50">
+<div class="flex flex-col min-h-[600px] max-h-[80vh] bg-gray-50">
   <!-- Header -->
-  <header class="sticky top-0 z-50 bg-white shadow-sm">
-    <div class="container mx-auto px-4 py-3 flex items-center justify-between">
-      <div class="flex items-center space-x-4">
-        <div class="relative">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-4l-4 4z" />
-          </svg>
-          <span class="absolute bottom-0 right-0 block h-3 w-3 rounded-full bg-green-500 ring-2 ring-white"></span>
+  <header class="sticky top-0 z-50 bg-white border-b border-gray-100">
+    <div class="container mx-auto px-4 py-4">
+      <div class="flex items-center justify-between">
+        <!-- Lado esquerdo com info do bot -->
+        <div class="flex items-center gap-4">
+          <div class="relative">
+            <div class="p-2.5 bg-primary/10 rounded-xl">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </div>
+            <span class="absolute bottom-0 right-0 block h-3 w-3 rounded-full bg-green-500 ring-2 ring-white"></span>
+          </div>
+          
+          <div class="flex flex-col">
+            <h1 class="text-lg font-bold text-gray-800 leading-tight">{{chatConfig.botName}}</h1>
+            <p class="text-sm text-gray-500">{{chatConfig.botDescription}}</p>
+          </div>
         </div>
-        <div>
-          <h1 class="text-xl font-bold text-gray-800">{{chatConfig.botName}}</h1>
-          <p class="text-sm text-gray-500">{{chatConfig.botDescription}}</p>
+        
+        <!-- Lado direito com ações -->
+        <div class="flex items-center gap-2">
+          <button (click)="navigateToProductsList()" 
+                  class="p-2 hover:bg-gray-50 rounded-xl transition-colors duration-200">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+            </svg>
+          </button>
+          
+          <button class="p-2 hover:bg-gray-50 rounded-xl transition-colors duration-200">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+            </svg>
+          </button>
         </div>
       </div>
-      <nav class="hidden md:block">
-        <button class="text-gray-600 hover:text-primary transition-colors">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-          </svg>
-        </button>
-      </nav>
     </div>
   </header>
+  
+  
+  
 
   <!-- Chat Container -->
   <main class="flex-1 overflow-hidden flex flex-col container mx-auto px-4 md:px-6 lg:px-8">
@@ -35,9 +53,9 @@
       <h2 class="text-2xl font-semibold text-gray-700 mb-2">Bem-vindo</h2>
       <p class="text-gray-500 max-w-md">Como posso ajudar você hoje? Estou aqui para responder suas perguntas e encontrar as melhores ofertas.</p>
     </section>
-
-    <!-- Messages Container -->
-    <section #chatContainer class="flex-1 overflow-y-auto space-y-4 py-4 scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-primary">
+    <!-- Atualize a section de mensagens -->
+    <section #chatContainer 
+              class="flex-1 overflow-y-auto space-y-4 py-4 scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-primary scroll-smooth">
       <div *ngFor="let message of messages; trackBy: trackByMessages" 
            class="flex w-full"
            [ngClass]="message.sender === 'user' ? 'justify-end' : 'justify-start'">
@@ -50,55 +68,75 @@
                           'bg-white text-gray-800 border border-gray-100'">
             {{ message.text }}
           </div>
-          
-          <!-- Product Section with Enhanced Responsive Grid -->
+          <!-- Product Section -->
           <div *ngIf="message.products && message.products.length > 0" 
-               class="mt-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                          class="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             <div *ngFor="let product of message.products; trackBy: trackByProducts" 
-                 class="bg-white rounded-xl shadow-lg overflow-hidden 
-                        transform transition-all duration-300 
-                        hover:-translate-y-2 hover:shadow-xl
-                        border border-gray-100">
-              <div class="relative">
-                <img 
-                  [src]="product.imageUrl || '/api/placeholder/400/250'" 
-                  alt="{{ product.product }}" 
-                  class="w-full h-48 object-cover"
+                            class="bg-background-light rounded-2xl overflow-hidden 
+                        transform transition-all duration-default 
+                        hover:-translate-y-1 hover:shadow-medium
+                        border border-gray-100 group">
+              <!-- Imagem com Badge -->
+              <div class="relative aspect-video">
+                <img [src]="product.imageUrl" 
+                                [alt]="product.product" 
+                                class="w-full h-full object-cover"
+                                onerror="this.src='/assets/placeholder.jpg'"
                 />
-                <div class="absolute top-3 right-3 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                <div class="absolute top-3 right-3 bg-accent text-white px-3 py-1.5 
+                            rounded-full text-xs font-semibold shadow-soft">
                   {{ ((1 - (product.discountedPrice / product.originalPrice)) * 100).toFixed(0) }}% OFF
                 </div>
               </div>
-              <div class="p-4">
-                <h3 class="font-bold text-base mb-2 text-gray-800 truncate">{{ product.product }}</h3>
-                <p class="text-sm text-gray-600 mb-3 line-clamp-2">{{ product.description }}</p>
-                <div class="flex flex-col space-y-3">
-                  <div class="flex items-center justify-between">
-                    <p class="text-sm text-gray-500 line-through">
+
+              <!-- Conteúdo -->
+              <div class="p-5 space-y-4">
+                <!-- Título e Descrição -->
+                <div>
+                  <h3 class="font-bold text-text mb-2 line-clamp-1">{{ product.product }}</h3>
+                  <p class="text-sm text-text-muted line-clamp-2">{{ product.description }}</p>
+                </div>
+
+                <!-- Preços -->
+                <div class="flex items-center justify-between">
+                  <div class="space-y-1">
+                    <p class="text-sm text-text-muted line-through">
                       {{ formatPrice(product.originalPrice) }}
                     </p>
-                    <p class="text-lg font-bold text-green-600">
+                    <p class="text-lg font-bold text-secondary">
                       {{ formatPrice(product.discountedPrice) }}
                     </p>
                   </div>
-                  <button 
-                    (click)="openProductLink(product)"
-                    class="w-full bg-primary text-white py-2.5 rounded-lg 
-                            hover:bg-primary-dark focus:outline-none focus:ring-2 
-                            focus:ring-primary focus:ring-offset-2
-                            transition-all duration-300 
-                            flex items-center justify-center gap-2 text-sm font-medium"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
-                    </svg>
-                    Ver Oferta
-                  </button>
+                  
+                  <!-- Cupom se disponível -->
+                  <div *ngIf="product.cuponCode" 
+                                  class="bg-background-dark px-3 py-1.5 rounded-lg">
+                    <span class="text-xs font-medium text-text-muted">Cupom:</span>
+                    <span class="text-sm font-bold text-primary ml-1">{{ product.cuponCode }}</span>
+                  </div>
                 </div>
+
+                <!-- Botão -->
+                <button (click)="openProductLink(product)"
+                        class="w-full bg-primary hover:bg-primary-dark 
+                                          text-white py-3 px-4 rounded-xl
+                                          transition-all duration-default
+                                          flex items-center justify-center gap-2 
+                                          text-sm font-medium group-hover:shadow-medium">
+                  <span>Ver Oferta</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" 
+                                  class="h-5 w-5 transition-transform duration-default group-hover:translate-x-1" 
+                                  fill="none" viewBox="0 0 24 24" 
+                                  stroke="currentColor">
+                    <path stroke-linecap="round" 
+                          stroke-linejoin="round" 
+                          stroke-width="2" 
+                          d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                </button>
               </div>
             </div>
           </div>
-          
           <div class="text-xs text-gray-500 mt-1.5 px-1"
                [ngClass]="message.sender === 'user' ? 'text-right' : 'text-left'">
             {{ message.sender === 'user' ? 'Você' : 'CuponAI' }}
@@ -120,7 +158,7 @@
     </section>
 
     <!-- Input Area -->
-    <footer class="sticky bottom-0 bg-white border-t border-gray-100 py-3 md:py-4">
+    <footer class="sticky bottom-0  border-t border-gray-100 py-3 md:py-4">
       <div class="container mx-auto px-4 md:px-0">
         <div class="flex items-center space-x-2">
           <input 

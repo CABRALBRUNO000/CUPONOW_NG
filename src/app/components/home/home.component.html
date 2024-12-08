@@ -26,7 +26,7 @@
           Use nosso assistente inteligente para encontrar exatamente o que você
           procura com os melhores preços!
         </p>
-        <button class="group bg-white text-primary hover:bg-primary hover:text-white px-6 md:px-8 py-3 md:py-4 rounded-2xl 
+        <button  (click)="scrollToChat()" class="group bg-white text-primary hover:bg-primary hover:text-white px-6 md:px-8 py-3 md:py-4 rounded-2xl 
           font-semibold transition-all duration-300 transform hover:scale-105 
           shadow-medium hover:shadow-lg flex items-center gap-2 mx-auto">
           <span>Começar Agora</span>
@@ -38,8 +38,61 @@
       </div>
     </div>
   </section>
+
+<!-- Como Funciona Section -->
+<section class="py-16 bg-white" id="como-funciona">
+  <div class="container mx-auto px-4">
+    <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">
+      Como Funciona o CuponAI
+    </h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <!-- Passo 1 -->
+      <div class="text-center p-6">
+        <div class="bg-primary/10 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+          </svg>
+        </div>
+        <h3 class="text-xl font-semibold mb-2">Digite o que procura</h3>
+        <p class="text-gray-600">Descreva o produto que você deseja encontrar usando linguagem natural</p>
+      </div>
+
+      <!-- Passo 2 -->
+      <div class="text-center p-6">
+        <div class="bg-primary/10 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+          </svg>
+        </div>
+        <h3 class="text-xl font-semibold mb-2">IA analisa sua busca</h3>
+        <p class="text-gray-600">Nossa inteligência artificial encontra as melhores ofertas disponíveis</p>
+      </div>
+
+      <!-- Passo 3 -->
+      <div class="text-center p-6">
+        <div class="bg-primary/10 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
+          </svg>
+        </div>
+        <h3 class="text-xl font-semibold mb-2">Economize</h3>
+        <p class="text-gray-600">Receba as melhores ofertas e cupons de desconto personalizados</p>
+      </div>
+    </div>
+
+    <div class="mt-12 text-center">
+      <p class="text-lg text-gray-700 max-w-2xl mx-auto">
+        O CuponAI utiliza tecnologia avançada para encontrar os melhores preços e cupons de desconto, 
+        garantindo que você sempre faça as melhores compras.
+      </p>
+    </div>
+  </div>
+</section>
+
+
   <!-- Main Content -->
-  <div class="w-full max-w-full mx-auto px-2 sm:px-4 py-4 bg-background-dark">
+  <div id="chatai" class="w-full max-w-full mx-auto px-2 sm:px-4 py-4 bg-background-dark">
     <app-mobile-chat></app-mobile-chat>
   </div>
   <footer class="bg-background-dark py-12">
@@ -57,7 +110,7 @@
           <h4 class="font-semibold text-text-default">Links Rápidos</h4>
           <ul class="space-y-2 text-text-muted">
             <li><a href="#" class="hover:text-primary transition-colors">Home</a></li>
-            <li><a href="#" class="hover:text-primary transition-colors">Como Funciona</a></li>
+            <li><a href="#como-funciona" class="hover:text-primary transition-colors">Como Funciona</a></li>
             <li><a href="#" class="hover:text-primary transition-colors">Ofertas</a></li>
           </ul>
         </div>
@@ -66,7 +119,7 @@
           <h4 class="font-semibold text-text-default">Suporte</h4>
           <ul class="space-y-2 text-text-muted">
             <li><a href="#" class="hover:text-primary transition-colors">FAQ</a></li>
-            <li><a href="#" class="hover:text-primary transition-colors">Contato</a></li>
+            <li><a (click)="openModal()" class="hover:text-primary transition-colors cursor-pointer">Contato</a></li>
             <li><a href="#" class="hover:text-primary transition-colors">Política de Privacidade</a></li>
           </ul>
         </div>
@@ -89,4 +142,50 @@
       </div>
     </div>
   </footer>
+
+ <!-- Modal -->
+<div *ngIf="showModal" 
+class="fixed inset-0 z-50 flex items-center justify-center">
+<!-- Overlay -->
+<div class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+
+<!-- Modal Content -->
+<div class="relative bg-white w-full max-w-md rounded-2xl p-8 m-4 z-50">
+<h3 class="text-2xl font-bold text-gray-900 mb-6">Fale Conosco</h3>
+
+<form class="space-y-4">
+ <div>
+   <label class="block text-sm font-medium text-gray-700 mb-1">Nome</label>
+   <input type="text" class="w-full px-4 py-2 border focus:outline-none border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary">
+ </div>
+
+ <div>
+   <label class="block text-sm font-medium text-gray-700 mb-1">E-mail</label>
+   <input type="email" class="w-full px-4 py-2 border focus:outline-none border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary">
+ </div>
+
+ <div>
+   <label class="block text-sm font-medium text-gray-700 mb-1">Mensagem</label>
+   <textarea rows="4" class="w-full focus:outline-none px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary"></textarea>
+ </div>
+
+ <div class="flex gap-3 mt-6">
+   <button type="submit" class="flex-1 bg-primary text-white px-6 py-3 rounded-xl hover:bg-primary-dark transition-colors">
+     Enviar
+   </button>
+   <button type="button" (click)="closeModal()" class="flex-1 bg-gray-100 text-gray-700 px-6 py-3 rounded-xl hover:bg-gray-200 transition-colors">
+     Cancelar
+   </button>
+ </div>
+</form>
+
+<!-- Close button -->
+<button (click)="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+ <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+ </svg>
+</button>
+</div>
+</div>
+
 </div>

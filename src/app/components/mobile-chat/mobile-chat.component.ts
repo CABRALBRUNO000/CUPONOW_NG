@@ -103,7 +103,11 @@ export class MobileChatComponent implements OnInit {
       sender: 'ai',
       products: response.products || []
     });
-    this.scrollToBottom();
+    
+    // Garante que o scroll aconteça após a renderização do DOM
+    setTimeout(() => {
+      this.scrollToBottom();
+    }, 100);
   }
 
   private handleError(): void {
@@ -121,10 +125,16 @@ export class MobileChatComponent implements OnInit {
 
   private scrollToBottom(): void {
     try {
+      const chatElement = this.chatContainer.nativeElement;
       setTimeout(() => {
-        this.chatContainer.nativeElement.scrollTop = this.chatContainer.nativeElement.scrollHeight;
+        chatElement.scrollTo({
+          top: chatElement.scrollHeight,
+          behavior: 'smooth'
+        });
       }, 100);
-    } catch (err) {}
+    } catch (err) {
+      this.logger.error('Erro ao realizar scroll', err);
+    }
   }
 
   formatPrice(price: number): string {
