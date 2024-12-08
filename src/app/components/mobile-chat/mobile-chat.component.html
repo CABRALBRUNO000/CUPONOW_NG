@@ -24,13 +24,13 @@
         <!-- Lado direito com ações -->
         <div class="flex items-center gap-2">
           <button (click)="navigateToProductsList()" 
-                  class="p-2 hover:bg-gray-50 rounded-xl transition-colors duration-200">
+                  class=" p-2 hover:bg-gray-50 rounded-xl transition-colors duration-200" aria-label="Botão que realiza a navegaçao para a lista de produtos">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
             </svg>
           </button>
           
-          <button class="p-2 hover:bg-gray-50 rounded-xl transition-colors duration-200">
+          <button class=" p-2 hover:bg-gray-50 rounded-xl transition-colors duration-200" aria-label="Botão que realiza a abertura do menu de configurações do chat">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
             </svg>
@@ -94,13 +94,13 @@
                 <!-- Título e Descrição -->
                 <div>
                   <h3 class="font-bold text-text mb-2 line-clamp-1">{{ product.product }}</h3>
-                  <p class="text-sm text-text-muted line-clamp-2">{{ product.description }}</p>
+                  <p class="text-sm text-gray-700 line-clamp-2">{{ product.description }}</p>
                 </div>
 
                 <!-- Preços -->
                 <div class="flex items-center justify-between">
                   <div class="space-y-1">
-                    <p class="text-sm text-text-muted line-through">
+                    <p class="text-sm text-gray-700 line-through">
                       {{ formatPrice(product.originalPrice) }}
                     </p>
                     <p class="text-lg font-bold text-secondary">
@@ -111,18 +111,18 @@
                   <!-- Cupom se disponível -->
                   <div *ngIf="product.cuponCode" 
                                   class="bg-background-dark px-3 py-1.5 rounded-lg">
-                    <span class="text-xs font-medium text-text-muted">Cupom:</span>
+                    <span class="text-xs font-medium text-gray-700">Cupom:</span>
                     <span class="text-sm font-bold text-primary ml-1">{{ product.cuponCode }}</span>
                   </div>
                 </div>
 
                 <!-- Botão -->
                 <button (click)="openProductLink(product)"
-                        class="w-full bg-primary hover:bg-primary-dark 
+                        class=" w-full bg-primary hover:bg-primary-dark 
                                           text-white py-3 px-4 rounded-xl
                                           transition-all duration-default
                                           flex items-center justify-center gap-2 
-                                          text-sm font-medium group-hover:shadow-medium">
+                                          text-sm font-medium group-hover:shadow-medium"aria-label="Botão que realiza o redirecionamento para a página do produto">
                   <span>Ver Oferta</span>
                   <svg xmlns="http://www.w3.org/2000/svg" 
                                   class="h-5 w-5 transition-transform duration-default group-hover:translate-x-1" 
@@ -178,13 +178,14 @@
             (click)="sendMessage()"
             [disabled]="isLoading || !newMessage.trim()"
             aria-label="Enviar mensagem"
-            class="bg-primary text-white px-4 md:px-6 py-2.5 md:py-3 rounded-xl 
+            class=" bg-primary text-white px-4 md:px-6 py-2.5 md:py-3 rounded-xl 
                    hover:bg-primary-dark focus:outline-none focus:ring-2 
                    focus:ring-primary focus:ring-offset-2
                    transition-all duration-300 
                    flex items-center gap-2 
                    disabled:opacity-50 disabled:cursor-not-allowed
                    transform hover:scale-105"
+                   aria-label="Botão que realiza o envio da mensagem"
           >
             <span class="hidden md:inline">Enviar</span>
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
