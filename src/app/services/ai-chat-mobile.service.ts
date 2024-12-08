@@ -51,9 +51,10 @@ export class AiChatMobileService {
 
       // Template de prompt para conversa principal
       const conversationPromptTemplate = ChatPromptTemplate.fromMessages([
-        ['system', `Você é um assistente de IA especializado em encontrar ofertas. 
-        Sua tarefa é ajudar os usuários a encontrar os melhores produtos com os melhores preços. 
-        Responda de forma amigável e direta.`],
+        ['system', `Você é um assistente de IA especializado em encontrar ofertas.
+  Mantenha sempre o contexto da conversa anterior ao sugerir novos produtos.
+  Analise o histórico completo para entender o tema/categoria que o usuário está interessado.
+  Suas respostas devem ser em português do Brasil de forma amigável e direta.`],
         new MessagesPlaceholder('history'),
         ['human', '{input}'],
       ]);
@@ -126,8 +127,13 @@ export class AiChatMobileService {
     }
 
     private async processOfferRequest(message: string): Promise<{ message: string; products: Offer[] }> {
+      const previousContext = this.messageHistory
+      .slice(-2)
+      .map(m => m.text)
+      .join('\n');
       // Prompt para geração de ofertas
-      const offerPrompt = `Gere um array JSON de  no minimo 3  e no maixomo 10 ofertas com base na seguinte solicitação: "${message}". 
+      const offerPrompt = `Considerando o contexto anterior da conversa: "${previousContext}"
+  Gere um array JSON de ofertas relacionadas ao mesmo tema/categoria. O array JSON precisa ter no minimo 3  e no maixomo 10 ofertas com base na seguinte solicitação: "${message}". 
       Use o formato:
       [
         {
