@@ -7,22 +7,34 @@ export class LoggerService {
   private readonly PREFIX = '[CuponAI]';
 
   info(message: string, ...args: any[]): void {
-    console.info(`${this.PREFIX} ${message}`, ...args);
+    console.log(JSON.stringify({
+      level: 'info',
+      message: `${this.PREFIX} ${message}`,
+      data: args
+    }));
   }
 
   error(message: string, error?: any): void {
-    console.error(`${this.PREFIX} ${message}`, error);
+    console.log(JSON.stringify({
+      level: 'error',
+      message: `${this.PREFIX} ${message}`,
+      error: error
+    }));
   }
 
   warn(message: string, ...args: any[]): void {
-    console.warn(`${this.PREFIX} ${message}`, ...args);
+    console.log(JSON.stringify({
+      level: 'warn',
+      message: `${this.PREFIX} ${message}`,
+      data: args
+    }));
   }
 
   debug(message: string, ...args: any[]): void {
-    console.debug(`${this.PREFIX} ${message}`, ...args);
-  }
-
-  trace(message: string, ...args: any[]): void {
-    console.trace(`${this.PREFIX} ${message}`, ...args);
+    console.log(JSON.stringify({
+      level: 'debug',
+      message: `${this.PREFIX} ${message}`,
+      data: args
+    }));
   }
 }
