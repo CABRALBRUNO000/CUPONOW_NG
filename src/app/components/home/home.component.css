@@ -21,9 +21,66 @@
     background-color: #ffffff;
     overflow-y: auto;
   }
+/* ----------------- */
 
+/* Gradiente Azul Profissional - Variação 1 */
+.gradient-professional-blue {
+  background: linear-gradient(
+      135deg, 
+      #1d4ed8 0%, 
+      #2563eb 50%, 
+      #3b82f6 100%
+  );
+  background-size: 400% 400%;
+  animation: gradientFlow 15s ease infinite;
+}
 
-  .bg-gradient-primary {
+/* Gradiente Azul Profissional - Variação 2 (Mais Suave) */
+.gradient-soft-blue {
+  background: linear-gradient(
+      to right top, 
+      #2563eb 0%, 
+      #4f80f0 50%, 
+      #7aa3f5 100%
+  );
+  background-size: 200% 200%;
+  animation: gradientFlow 10s ease infinite;
+}
+
+/* Gradiente Minimalista com Azul e Branco */
+.gradient-minimal-blue {
+  background: linear-gradient(
+      150deg, 
+      #f8fafc 0%, 
+      #e6eaf0 30%, 
+      #2563eb 100%
+  );
+  background-size: 300% 300%;
+  animation: gradientFlow 12s ease infinite;
+}
+
+@keyframes gradientFlow {
+  0% {
+      background-position: 0% 50%;
+  }
+  50% {
+      background-position: 100% 50%;
+  }
+  100% {
+      background-position: 0% 50%;
+  }
+}
+
+/* Variação Flat sem Animação */
+.gradient-flat-blue {
+  background: linear-gradient(
+      135deg, 
+      #1d4ed8, 
+      #3b82f6
+  );
+}
+
+  /* .bg-gradient-primary {
     background: linear-gradient(-45deg, #1e40af, #3b82f6, #1d4ed8, #2563eb);
     background-size: 400% 400%;
     animation: waveGradient 10s cubic-bezier(0.4, 0, 0.2, 1) infinite;
@@ -39,7 +96,7 @@
     100% {
       background-position: 0% 0%;
     }
-  }
+  } */
   
 
   /* .bg-gradient-primary {
