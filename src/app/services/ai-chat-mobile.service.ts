@@ -35,19 +35,20 @@ export class AiChatMobileService {
         modelName: 'gpt-3.5-turbo-1106'
       });
 
-      // Template de prompt para identificação de intenção de ofertas
-      const intentPromptTemplate = ChatPromptTemplate.fromMessages([
-        ['system', `Você é um assistente de IA especializado em detectar intenções relacionadas a ofertas de produtos. 
-        Sua tarefa é analisar a mensagem do usuário e determinar se ele está buscando ofertas.
-        Responda apenas com 'SIM' ou 'NÃO' seguido de uma breve justificativa.
-    
-        Exemplos:
-        - "Quero comprar um smartphone barato" -> SIM: Busca clara por ofertas de produtos
-        - "Como está o tempo hoje?" -> NÃO: Sem relação com compras ou ofertas
-        - "Encontre os melhores descontos em eletrônicos" -> SIM: Pedido direto de ofertas`],
-        new MessagesPlaceholder('history'),
-        ['human', '{input}'],
-      ]);
+    // Template de prompt para identificação de intenção de ofertas
+    const intentPromptTemplate = ChatPromptTemplate.fromMessages([
+      ['system', `Você é um assistente especializado em detectar intenções de compra e busca por produtos.
+Identifique quando o usuário:
+- Menciona produtos específicos
+- Solicita recomendações de produtos
+- Busca por ofertas ou descontos
+- Faz perguntas sobre preços
+  
+Responda 'SIM' quando detectar qualquer uma dessas intenções.
+Responda 'NÃO' apenas para mensagens sem relação com produtos ou compras.`],
+      new MessagesPlaceholder('history'),
+      ['human', '{input}'],
+    ]);
 
       // Template de prompt para conversa principal
       const conversationPromptTemplate = ChatPromptTemplate.fromMessages([
