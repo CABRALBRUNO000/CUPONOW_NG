@@ -120,8 +120,20 @@ export class MobileChatComponent implements OnInit {
 
   private finalizeSendMessage(): void {
     this.isLoading = false;
-    setTimeout(() => this.messageInput.nativeElement.focus(), 0);
+    
+    // Use requestAnimationFrame para garantir foco após renderização
+    requestAnimationFrame(() => {
+      if (this.messageInput && this.messageInput.nativeElement) {
+        const inputElement = this.messageInput.nativeElement;
+        
+        // Foco sem rolagem
+        inputElement.focus({
+          preventScroll: true
+        });
+      }
+    });
   }
+  
 
   private scrollToBottom(): void {
     try {
