@@ -192,14 +192,22 @@ Responda 'NÃO' apenas para mensagens sem relação com produtos ou compras.`],
   private generateOfferResponseMessage(offers: Offer[]): string {
     if (offers.length === 0) return 'Não encontrei ofertas correspondentes.';
 
+    const hasAnyDiscount = offers.some(offer => offer.discount > 0);
+  
+    if (!hasAnyDiscount) {
+      const offerSummary = offers.slice(0, 3).map(offer => 
+        `${offer.name} - R$ ${offer.price.toFixed(2)}`
+      ).join('\n');
+    
+      return `Encontrei os melhores preços disponíveis para você, mesmo sem descontos ativos no momento: ${offerSummary}. Te ajudo em algo mais ?`;
+    }
 
     const offerSummary = offers.slice(0, 3).map(offer => 
       `${offer.name} - ${offer.discount}% OFF - Por R$ ${offer.price.toFixed(2)}`
     ).join('\n');
 
-    return `Encontrei algumas ofertas incríveis para você: ${offerSummary}. Quer saber mais detalhes?`;
+    return `Encontrei algumas ofertas incríveis para você: ${offerSummary}. Te ajudo em algo mais ?`;
   }
-
   // Método para recuperar histórico de mensagens
   getMessageHistory(): Message[] {
     return this.messageHistory;

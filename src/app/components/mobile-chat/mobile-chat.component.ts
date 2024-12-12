@@ -6,6 +6,7 @@ import { Message } from '../../models/message.model';
 import { Offer } from '../../models/offer.model';
 import { AiChatMobileService } from '../../services/ai-chat-mobile.service';
 import { LoggerService } from '../../services/logger.service';
+
 interface ChatMessage extends Message {
   products?: Offer[];
 }

@@ -1,5 +1,5 @@
+<div class="flex flex-col min-h-[200px] h-fit max-h-[80vh] bg-gray-50">
 
-<div class="flex flex-col min-h-[600px] max-h-[80vh] bg-gray-50">
   <!-- Header -->
   <header class="sticky top-0 z-50 bg-white border-b border-gray-100">
     <div class="container mx-auto px-4 py-4">
@@ -68,57 +68,58 @@
                           'bg-white text-gray-800 border border-gray-100'">
             {{ message.text }}
           </div>
-          <!-- Product Section - Layout Horizontal -->
+          <!-- Product Section - Layout Horizontal Responsivo -->
           <div *ngIf="message.products && message.products.length > 0" 
                class="mt-3 flex flex-col gap-3">
             <div *ngFor="let product of message.products; trackBy: trackByProducts" 
                  class="bg-white rounded-xl shadow-soft overflow-hidden 
                         transform transition-default hover:-translate-y-1 
-                        border border-gray-100 flex h-32">
+                        border border-gray-100 flex h-28 sm:h-32">
               
               <!-- Imagem do Produto -->
-              <div class="relative w-32 flex-shrink-0">
+              <div class="relative w-24 sm:w-32 flex-shrink-0">
                 <img [src]="product.thumbnail" 
                      [alt]="product.name" 
                      class="w-full h-full object-cover"
                 />
-                <div class="absolute top-2 left-2 bg-accent text-white px-2 py-1 rounded-lg text-xs font-semibold">
+                <div *ngIf="product.discount > 0" class="absolute top-1 left-1 bg-accent text-white px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-lg text-xs font-semibold">
                   -{{product.discount}}%
                 </div>
               </div>
 
               <!-- Informações do Produto -->
-              <div class="flex-1 p-3 flex flex-col justify-between">
+              <div class="flex-1 p-2 sm:p-3 flex flex-col justify-between min-w-0">
                 <div>
-                  <h3 class="font-bold text-sm text-text truncate">{{product.name}}</h3>
-                  <div class="flex items-center gap-2 mt-1">
+                  <h3 class="font-bold text-xs sm:text-sm text-text truncate max-w-full">{{product.name}}</h3>
+                  <div class="flex items-center gap-1 sm:gap-2 mt-0.5 sm:mt-1">
                     <img [src]="product.store.thumbnail" 
                          [alt]="product.store.name" 
-                         class="w-4 h-4 rounded-full"
+                         class="w-3 h-3 sm:w-4 sm:h-4 rounded-full"
                     />
-                    <span class="text-xs text-text-muted">{{product.store.name}}</span>
+                    <span class="text-[10px] sm:text-xs text-text-muted truncate">{{product.store.name}}</span>
                   </div>
                 </div>
 
                 <!-- Preços e CTA -->
                 <div class="flex items-center justify-between">
-                  <div class="flex flex-col">
-                    <span class="text-xs text-text-muted line-through">
+                  <div *ngIf="product.discount > 0"  class="flex flex-col min-w-0">
+                    <span class="text-[10px] sm:text-xs text-text-muted line-through truncate">
                       {{formatPrice(product.priceFrom || product.price)}}
                     </span>
-                    <span class="text-sm font-bold text-primary">
+                    <span class="text-xs sm:text-sm font-bold text-primary">
                       {{formatPrice(product.price)}}
                     </span>
-                    <span *ngIf="product.installment" class="text-xs text-text-muted">
+                    <span *ngIf="product.installment" class="text-[10px] sm:text-xs text-text-muted truncate">
                       {{product.installment.quantity}}x de {{formatPrice(product.installment.value)}}
                     </span>
                   </div>
                   
                   <button (click)="openProductLink(product)"
-                          class="bg-primary hover:bg-primary-dark text-white px-4 py-2 
-                                 rounded-lg text-sm font-medium transition-default 
-                                 flex items-center gap-1">
-                    <span>Ver</span>
+                          class="bg-primary hover:bg-primary-dark text-white 
+                                 px-2 sm:px-4 py-1.5 sm:py-2 
+                                 rounded-lg text-xs sm:text-sm font-medium 
+                                 transition-default flex items-center gap-1 ml-2">
+                    <span class="hidden sm:inline">Ver</span>
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                       <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
                     </svg>
