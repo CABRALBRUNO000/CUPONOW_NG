@@ -13,15 +13,13 @@ export class LoggerService {
       data: args
     }));
   }
-
   error(message: string, error?: any): void {
     console.log(JSON.stringify({
       level: 'error',
       message: `${this.PREFIX} ${message}`,
-      error: error
+      error: error instanceof Error ? error.message : error
     }));
   }
-
   warn(message: string, ...args: any[]): void {
     console.log(JSON.stringify({
       level: 'warn',

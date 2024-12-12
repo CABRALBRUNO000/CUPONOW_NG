@@ -157,8 +157,8 @@ export class MobileChatComponent implements OnInit {
   }
 
   openProductLink(product: Offer): void {
-    const url = product.productUrl || 
-      `https://www.google.com/search?q=${encodeURIComponent(`${product.product} oferta`)}`;
+    const url = product.link || 
+      `https://www.google.com/search?q=${encodeURIComponent(`${product.name} oferta`)}`;
     window.open(url, '_blank');
   }
 

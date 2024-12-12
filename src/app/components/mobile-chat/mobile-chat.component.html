@@ -68,72 +68,62 @@
                           'bg-white text-gray-800 border border-gray-100'">
             {{ message.text }}
           </div>
-          <!-- Product Section -->
+          <!-- Product Section - Layout Horizontal -->
           <div *ngIf="message.products && message.products.length > 0" 
-                          class="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+               class="mt-3 flex flex-col gap-3">
             <div *ngFor="let product of message.products; trackBy: trackByProducts" 
-                            class="bg-background-light rounded-2xl overflow-hidden 
-                        transform transition-all duration-default 
-                        hover:-translate-y-1 hover:shadow-medium
-                        border border-gray-100 group">
-              <!-- Imagem com Badge -->
-              <div class="relative aspect-video">
-                <img [src]="product.imageUrl" 
-                                [alt]="product.product" 
-                                class="w-full h-full object-cover"
-                                onerror="this.src='/assets/placeholder.jpg'"
+                 class="bg-white rounded-xl shadow-soft overflow-hidden 
+                        transform transition-default hover:-translate-y-1 
+                        border border-gray-100 flex h-32">
+              
+              <!-- Imagem do Produto -->
+              <div class="relative w-32 flex-shrink-0">
+                <img [src]="product.thumbnail" 
+                     [alt]="product.name" 
+                     class="w-full h-full object-cover"
                 />
-                <div class="absolute top-3 right-3 bg-accent text-white px-3 py-1.5 
-                            rounded-full text-xs font-semibold shadow-soft">
-                  {{ ((1 - (product.discountedPrice / product.originalPrice)) * 100).toFixed(0) }}% OFF
+                <div class="absolute top-2 left-2 bg-accent text-white px-2 py-1 rounded-lg text-xs font-semibold">
+                  -{{product.discount}}%
                 </div>
               </div>
 
-              <!-- Conteúdo -->
-              <div class="p-5 space-y-4">
-                <!-- Título e Descrição -->
+              <!-- Informações do Produto -->
+              <div class="flex-1 p-3 flex flex-col justify-between">
                 <div>
-                  <h3 class="font-bold text-text mb-2 line-clamp-1">{{ product.product }}</h3>
-                  <p class="text-sm text-gray-700 line-clamp-2">{{ product.description }}</p>
+                  <h3 class="font-bold text-sm text-text truncate">{{product.name}}</h3>
+                  <div class="flex items-center gap-2 mt-1">
+                    <img [src]="product.store.thumbnail" 
+                         [alt]="product.store.name" 
+                         class="w-4 h-4 rounded-full"
+                    />
+                    <span class="text-xs text-text-muted">{{product.store.name}}</span>
+                  </div>
                 </div>
 
-                <!-- Preços -->
+                <!-- Preços e CTA -->
                 <div class="flex items-center justify-between">
-                  <div class="space-y-1">
-                    <p class="text-sm text-gray-700 line-through">
-                      {{ formatPrice(product.originalPrice) }}
-                    </p>
-                    <p class="text-lg font-bold text-secondary">
-                      {{ formatPrice(product.discountedPrice) }}
-                    </p>
+                  <div class="flex flex-col">
+                    <span class="text-xs text-text-muted line-through">
+                      {{formatPrice(product.priceFrom || product.price)}}
+                    </span>
+                    <span class="text-sm font-bold text-primary">
+                      {{formatPrice(product.price)}}
+                    </span>
+                    <span *ngIf="product.installment" class="text-xs text-text-muted">
+                      {{product.installment.quantity}}x de {{formatPrice(product.installment.value)}}
+                    </span>
                   </div>
                   
-                  <!-- Cupom se disponível -->
-                  <div *ngIf="product.cuponCode" 
-                                  class="bg-background-dark px-3 py-1.5 rounded-lg">
-                    <span class="text-xs font-medium text-gray-700">Cupom:</span>
-                    <span class="text-sm font-bold text-primary ml-1">{{ product.cuponCode }}</span>
-                  </div>
+                  <button (click)="openProductLink(product)"
+                          class="bg-primary hover:bg-primary-dark text-white px-4 py-2 
+                                 rounded-lg text-sm font-medium transition-default 
+                                 flex items-center gap-1">
+                    <span>Ver</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                    </svg>
+                  </button>
                 </div>
-
-                <!-- Botão -->
-                <button (click)="openProductLink(product)"
-                        class=" w-full bg-primary hover:bg-primary-dark 
-                                          text-white py-3 px-4 rounded-xl
-                                          transition-all duration-default
-                                          flex items-center justify-center gap-2 
-                                          text-sm font-medium group-hover:shadow-medium"aria-label="Botão que realiza o redirecionamento para a página do produto">
-                  <span>Ver Oferta</span>
-                  <svg xmlns="http://www.w3.org/2000/svg" 
-                                  class="h-5 w-5 transition-transform duration-default group-hover:translate-x-1" 
-                                  fill="none" viewBox="0 0 24 24" 
-                                  stroke="currentColor">
-                    <path stroke-linecap="round" 
-                          stroke-linejoin="round" 
-                          stroke-width="2" 
-                          d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                  </svg>
-                </button>
               </div>
             </div>
           </div>

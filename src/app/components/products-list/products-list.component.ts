@@ -41,10 +41,10 @@ export class ProductsListComponent implements OnInit {
   }
 
   openProductLink(product: Offer) {
-    if (product.productUrl) {
-      window.open(product.productUrl, '_blank');
+    if (product.link) {
+      window.open(product.link, '_blank');
     } else {
-      const searchQuery = encodeURIComponent(`${product.product} oferta`);
+      const searchQuery = encodeURIComponent(`${product.name} oferta`);
       window.open(`https://www.google.com/search?q=${searchQuery}`, '_blank');
     }
   }

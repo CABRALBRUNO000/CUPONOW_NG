@@ -1,51 +1,45 @@
-
 <div class="bg-background min-h-screen py-8">
   <div class="max-w-7xl mx-auto px-4">
     <div class="flex items-center justify-between mb-8">
       <h1 class="text-3xl font-bold text-text">Todos os Produtos Encontrados</h1>
-      <button 
-      aria-label="Botão que realiza a navegação para a tela de chat"
-       [routerLink]="['/']" 
-        class=" flex items-center gap-2 text-primary hover:text-primary-dark"
-      >
+      <button aria-label="Botão que realiza a navegação para a tela de chat" [routerLink]="['/']"
+        class=" flex items-center gap-2 text-primary hover:text-primary-dark">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 15l-3-3m0 0l3-3m-3 3h8M3 12a9 9 0 1118 0 9 9 0 01-18 0z" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M11 15l-3-3m0 0l3-3m-3 3h8M3 12a9 9 0 1118 0 9 9 0 01-18 0z" />
         </svg>
         Voltar ao Chat
       </button>
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      <div *ngFor="let product of products" 
-           class="bg-white rounded-xl shadow-medium overflow-hidden transform transition-all duration-default hover:shadow-lg">
+      <div *ngFor="let product of products"
+        class="bg-white rounded-xl shadow-medium overflow-hidden transform transition-all duration-default hover:shadow-lg">
         <div class="relative">
-          <img [src]="product.imageUrl" 
-               [alt]="product.product"
-               class="w-full h-48 object-cover" 
-               (error)="handleImageError($event)"/>
-          <div class="absolute top-2 right-2 bg-secondary text-white px-2 py-1 rounded-full text-xs">
-            {{ ((1 - (product.discountedPrice / product.originalPrice)) * 100).toFixed(0) }}% OFF
+          <img [src]="product.thumbnail" [alt]="product.name" class="w-full h-48 object-cover"
+            (error)="handleImageError($event)" />
+          <div *ngIf="product.price && product.priceFrom"
+            class="absolute top-2 right-2 bg-secondary text-white px-2 py-1 rounded-full text-xs">
+            {{ ((1 - (product.price / product.priceFrom)) * 100).toFixed(0) }}% OFF
           </div>
+
         </div>
 
         <div class="p-4">
-          <h3 class="font-bold text-lg mb-2 text-text">{{product.product}}</h3>
-          <p class="text-gray-700 text-sm mb-4">{{product.description}}</p>
+          <h3 class="font-bold text-lg mb-2 text-text">{{product.name}}</h3>
 
           <div class="flex flex-col gap-2">
-            <div>
+            <div *ngIf="product.priceFrom">
               <p class="text-sm text-gray-700 line-through">
-                {{formatPrice(product.originalPrice)}}
+                {{formatPrice(product.priceFrom)}}
               </p>
               <p class="text-xl font-bold text-secondary-dark">
-                {{formatPrice(product.discountedPrice)}}
+                {{formatPrice(product.price)}}
               </p>
             </div>
 
-            <button 
-              (click)="openProductLink(product)"
-              class=" w-full bg-primary text-white py-2 rounded-lg hover:bg-primary-dark transition-colors duration-default text-sm font-medium"
-            >
+            <button (click)="openProductLink(product)"
+              class=" w-full bg-primary text-white py-2 rounded-lg hover:bg-primary-dark transition-colors duration-default text-sm font-medium">
               Ver Oferta
             </button>
           </div>

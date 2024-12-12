@@ -6,8 +6,12 @@ import { ChatPromptTemplate, MessagesPlaceholder } from '@langchain/core/prompts
 import { Message } from '../models/message.model';
 import { Offer } from '../models/offer.model';
 import { environment } from '../../environments/environment';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { LoggerService } from './logger.service';
+import { LomadeeService } from './lomadee.service';
+import { RagService } from './rag.service';
+import { OpenAIService } from './openai.service';
+
 
 @Injectable({
   providedIn: 'root'
@@ -21,19 +25,22 @@ export class AiChatMobileService {
   private offers: Offer[] = [];
   private productsSubject = new BehaviorSubject<Offer[]>([]);
   products$ = this.productsSubject.asObservable();
-    constructor(private logger: LoggerService) {
-      this.initializeLangChain();
-      this.logger.info('AiChatMobileService inicializado');
-    }
 
-    private initializeLangChain() {
-      this.logger.info('Iniciando configuração do LangChain');
-  
-      this.model = new ChatOpenAI({
-        openAIApiKey: environment.openAiKey.trim(),
-        temperature: 0.7,
-        modelName: 'gpt-3.5-turbo-1106'
-      });
+  constructor(
+    private logger: LoggerService,
+    private ragService: RagService,
+    private openAIService: OpenAIService
+
+
+  ) {
+    this.initializeLangChain();
+    this.logger.info('AiChatMobileService inicializado');
+  }
+
+  private initializeLangChain() {
+    this.logger.info('Iniciando configuração do LangChain');
+
+  this.model = this.openAIService.getChatModel(0.7);
 
     // Template de prompt para identificação de intenção de ofertas
     const intentPromptTemplate = ChatPromptTemplate.fromMessages([
@@ -50,152 +57,133 @@ Responda 'NÃO' apenas para mensagens sem relação com produtos ou compras.`],
       ['human', '{input}'],
     ]);
 
-      // Template de prompt para conversa principal
-      const conversationPromptTemplate = ChatPromptTemplate.fromMessages([
-        ['system', `Você é um assistente de IA especializado em encontrar ofertas.
+    // Template de prompt para conversa principal
+    const conversationPromptTemplate = ChatPromptTemplate.fromMessages([
+      ['system', `Você é um assistente de IA especializado em encontrar ofertas.
   Mantenha sempre o contexto da conversa anterior ao sugerir novos produtos.
   Analise o histórico completo para entender o tema/categoria que o usuário está interessado.
   Suas respostas devem ser em português do Brasil de forma amigável e direta.`],
-        new MessagesPlaceholder('history'),
-        ['human', '{input}'],
-      ]);
+      new MessagesPlaceholder('history'),
+      ['human', '{input}'],
+    ]);
 
-      // Configuração da memória para manter o contexto da conversa
-      this.memory = new BufferMemory({
-        returnMessages: true,
-        memoryKey: 'history'
-      });
+    // Configuração da memória para manter o contexto da conversa
+    this.memory = new BufferMemory({
+      returnMessages: true,
+      memoryKey: 'history'
+    });
 
-      // Criação das cadeias de conversação
-      this.intentChain = new ConversationChain({
-        llm: this.model,
-        memory: this.memory,
-        prompt: intentPromptTemplate
-      });
+    // Criação das cadeias de conversação
+    this.intentChain = new ConversationChain({
+      llm: this.model,
+      memory: this.memory,
+      prompt: intentPromptTemplate
+    });
 
-      this.conversationChain = new ConversationChain({
-        llm: this.model,
-        memory: this.memory,
-        prompt: conversationPromptTemplate
-      });
+    this.conversationChain = new ConversationChain({
+      llm: this.model,
+      memory: this.memory,
+      prompt: conversationPromptTemplate
+    });
 
-      this.logger.debug('Chains e templates configurados');
-      this.logger.info('LangChain inicializado com sucesso');
-    }
+    this.logger.debug('Chains e templates configurados');
+    this.logger.info('LangChain inicializado com sucesso');
+  }
 
-    async sendMessage(message: string): Promise<{ message: string; products: Offer[] }> {
-      this.logger.info('Processando mensagem:', message);
-  
-      try {
-        const intentResponse = await this.intentChain.call({ input: message });
-        const intentAnalysis = intentResponse['response'];
-        this.logger.debug('Análise de intenção:', intentAnalysis);
-
-        let response: { message: string; products: Offer[] };
-
-        if (intentAnalysis.startsWith('SIM')) {
-          this.logger.info('Intenção de oferta detectada');
-          response = await this.processOfferRequest(message);
-        } else {
-          this.logger.info('Processando mensagem sem intenção de oferta');
-          const conversationResponse = await this.conversationChain.call({ input: message });
-          response = {
-            message: conversationResponse['response'],
-            products: []
-          };
-        }
-
-        this.messageHistory.push(
-          { text: message, sender: 'user' },
-          { text: response.message, sender: 'ai' }
-        );
-
-        if (response.products.length > 0) {
-          const currentProducts = this.getAllProducts();
-          const updatedProducts = [...currentProducts, ...response.products];
-          this.setProducts(updatedProducts);
-          this.logger.info('Produtos atualizados', { quantidade: updatedProducts.length });
-        }
-
-        return response;
-      } catch (error) {
-        this.logger.error('Erro ao processar mensagem:', error);
-        return {
-          message: 'Desculpe, ocorreu um erro. Pode tentar novamente?',
-          products: this.getAllProducts()
-        };
-      }
-    }
-
-    private async processOfferRequest(message: string): Promise<{ message: string; products: Offer[] }> {
-      const previousContext = this.messageHistory
-      .slice(-2)
-      .map(m => m.text)
-      .join('\n');
-      // Prompt para geração de ofertas
-      const offerPrompt = `Considerando o contexto anterior da conversa: "${previousContext}"
-  Gere um array JSON de ofertas relacionadas ao mesmo tema/categoria. O array JSON precisa ter no minimo 3  e no maixomo 10 ofertas com base na seguinte solicitação: "${message}". 
-      Use o formato:
-      [
-        {
-          "id": "id do produto",
-          "product": "nome do produto",
-          "description": "descrição curta",
-          "imageUrl": "url da imagem do produto",
-          "originalPrice": número,
-          "discountedPrice": número, 
-          "productUrl": "url do produto ou oferta";
-          "cuponCode": "string com o codigo do cupon"
-        }
-      ]
-
-    getAllProducts(): Offer[] {
-      const savedProducts = localStorage.getItem('chatProducts');
-      if (savedProducts) {
-        const products = JSON.parse(savedProducts);
-        this.productsSubject.next(products);
-        this.logger.debug('Produtos carregados do localStorage', { quantidade: products.length });
-        return products;
-      }
-      return this.productsSubject.getValue();
-    }
-
-    setProducts(products: Offer[]) {
-      this.logger.debug('Salvando produtos', { quantidade: products.length });
-      this.productsSubject.next(products);
-      localStorage.setItem('chatProducts', JSON.stringify(products));
-    }
-
-    clearProducts() {
-      this.logger.info('Limpando lista de produtos');
-      this.productsSubject.next([]);
-      localStorage.removeItem('chatProducts');
-    }
-    Certifique-se de que os produtos sejam relevantes para a solicitação.`;
-
-    const offerResponse = await this.model.call([{ type: 'human', content: offerPrompt }]);
+  async sendMessage(message: string): Promise<{ message: string; products: Offer[] }> {
+    this.logger.info('Processando mensagem:', message);
 
     try {
-      // Parsear a resposta JSON
-      const offers: Offer[] = JSON.parse(typeof offerResponse.content === 'string' 
-        ? offerResponse.content.trim() 
-        : JSON.stringify(offerResponse.content)
+      const intentResponse = await this.intentChain.call({ input: message });
+      const intentAnalysis = intentResponse['response'];
+      this.logger.debug('Análise de intenção:', intentAnalysis);
+
+      let response: { message: string; products: Offer[] };
+
+      if (intentAnalysis.startsWith('SIM')) {
+        this.logger.info('Intenção de oferta detectada');
+        response = await this.processOfferRequest(message);
+      } else {
+        this.logger.info('Processando mensagem sem intenção de oferta');
+        const conversationResponse = await this.conversationChain.call({ input: message });
+        response = {
+          message: conversationResponse['response'],
+          products: []
+        };
+      }
+
+      this.messageHistory.push(
+        { text: message, sender: 'user' },
+        { text: response.message, sender: 'ai' }
       );
 
-      // Montar mensagem de resposta
-      const responseMessage = this.generateOfferResponseMessage(offers);
+      if (response.products.length > 0) {
+        const currentProducts = this.getAllProducts();
+        const updatedProducts = [...currentProducts, ...response.products];
+        this.setProducts(updatedProducts);
+        this.logger.info('Produtos atualizados', { quantidade: updatedProducts.length });
+      }
 
-      // Atualizar ofertas
-      this.offers = [...this.offers, ...offers];
+      return response;
+    } catch (error) {
+      this.logger.error('Erro ao processar mensagem:', error);
+      return {
+        message: 'Desculpe, ocorreu um erro. Pode tentar novamente?',
+
+
+
+
+        products: this.getAllProducts()
+      };
+    }
+  }
+
+  private async processOfferRequest(message: string): Promise<{ message: string; products: Offer[] }> {
+    try {
+      // Primeiro, vamos usar o modelo para extrair a palavra-chave da mensagem
+      const keywordPrompt = `Analise esta mensagem: "${message}"
+        Extraia apenas UMA palavra-chave principal que melhor representa o produto ou categoria desejada.
+        Regras:
+        - Retorne apenas uma única palavra
+        - Sem pontuação
+        - Sem artigos ou preposições
+        - Sem explicações adicionais
+        - Ignorar palavras como "oferta", "desconto", "promoção"
+        - Foque no produto/categoria principal
+    
+        Exemplo:
+        Mensagem: "quero ver ofertas de tênis nike"
+        Resposta: nike
+    
+        Mensagem: "procuro promoções de celular"
+        Resposta: celular`;
+
+      const keywordResponse = await this.model.call([{ type: 'human', content: keywordPrompt }]);
+      const keyword = keywordResponse.content.toString().trim();
+      console.log('Palavra-chave extraída:', keyword);
+
+      const offers = await firstValueFrom(this.ragService.getRelevantOffers(message, keyword));
+      this.logger.info('Ofertas encontradas via RAG:', offers.length);
+
+      if (offers.length === 0) {
+        return {
+          message: 'Desculpe, não encontrei ofertas específicas para sua busca. Pode tentar com outros termos?',
+          products: []
+        };
+      }
+
+      // Gerar mensagem de resposta com as ofertas encontradas
+      const responseMessage = this.generateOfferResponseMessage(offers);
 
       return {
         message: responseMessage,
         products: offers
       };
+
     } catch (error) {
-      console.error('Erro ao gerar ofertas:', error);
+      this.logger.error('Erro ao processar ofertas:', error);
       return {
-        message: 'Desculpe, não consegui encontrar ofertas no momento.',
+        message: 'Encontrei algumas ofertas para você, mas houve um problema ao processá-las.',
         products: []
       };
     }
@@ -204,9 +192,10 @@ Responda 'NÃO' apenas para mensagens sem relação com produtos ou compras.`],
   private generateOfferResponseMessage(offers: Offer[]): string {
     if (offers.length === 0) return 'Não encontrei ofertas correspondentes.';
 
-    const offerSummary = offers.map(offer => 
-      `${offer.product} - De R${offer.originalPrice} por R${offer.discountedPrice}`
-    ).join(', ');
+
+    const offerSummary = offers.slice(0, 3).map(offer => 
+      `${offer.name} - ${offer.discount}% OFF - Por R$ ${offer.price.toFixed(2)}`
+    ).join('\n');
 
     return `Encontrei algumas ofertas incríveis para você: ${offerSummary}. Quer saber mais detalhes?`;
   }
