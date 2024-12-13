@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, retry, catchError, throwError } from 'rxjs';
 import { LomadeeResponse } from '../models/lomadee.model';
-import { CategoryResponse } from '../interfaces/category.interface'; 
+import { CategoryResponse } from '../interfaces/category.interface';
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -15,47 +15,60 @@ export class LomadeeService {
   private readonly SORT = 'price';
   private readonly SIZE = 100;
 
+  private readonly defaultHeaders = new HttpHeaders()
+    .set('Accept', 'application/json')
+    .set('Content-Type', 'application/json');
+
+  private readonly defaultOptions = {
+    headers: this.defaultHeaders,
+    withCredentials: false
+  };
+
   constructor(private http: HttpClient) { }
 
   searchOffers(keyword: string): Observable<LomadeeResponse> {
     const url = `${this.API_URL}/${this.APP_TOKEN}/offer/_search`;
-
-    const headers = new HttpHeaders()
-      .set('Accept', 'application/json')
-      .set('Content-Type', 'application/json');
-    
     const params = new HttpParams()
       .set('sourceId', this.SOURCE_ID)
-      .set('keyword', keyword)
+      .set('keyword', encodeURIComponent(keyword))
       .set('sort', this.SORT)
       .set('size', this.SIZE);
 
-      return this.http.get<LomadeeResponse>(url, { 
-        headers, 
-        params,
-        withCredentials: false
-      });
+    return this.http.get<LomadeeResponse>(url, { 
+      ...this.defaultOptions,
+      params
+    }).pipe(
+      retry(3),
+      catchError(this.handleError)
+    );
   }
 
   getCategoryKeyord(keyword: string): Observable<CategoryResponse> {
     const url = `${this.API_URL}/${this.APP_TOKEN}/category/_search`;
-    
-    return this.http.get<CategoryResponse>(url, {
-      params: {
-        sourceId: this.SOURCE_ID,
-        keyword,
-      }
-    });
-  }
+    const params = new HttpParams()
+      .set('sourceId', this.SOURCE_ID)
+      .set('keyword', encodeURIComponent(keyword));
 
+    return this.http.get<CategoryResponse>(url, {
+      ...this.defaultOptions,
+      params
+    }).pipe(
+      retry(3),
+      catchError(this.handleError)
+    );
+  }
 
   getCategoryFilters(categoryId: string): Observable<CategoryResponse[]> {
     const url = `${this.API_URL}/${this.APP_TOKEN}/category/_id/${categoryId}`;
+    const params = new HttpParams().set('sourceId', this.SOURCE_ID);
+
     return this.http.get<CategoryResponse[]>(url, {
-      params: {
-        sourceId: this.SOURCE_ID
-      }
-    });
+      ...this.defaultOptions,
+      params
+    }).pipe(
+      retry(3),
+      catchError(this.handleError)
+    );
   }
 
   searchProductsWithFilters(
@@ -70,12 +83,24 @@ export class LomadeeService {
     } = {}
   ): Observable<CategoryResponse> {
     const url = `${this.API_URL}/${this.APP_TOKEN}/offer/_category/${categoryId}`;
-    
-    const params = {
-      sourceId: this.SOURCE_ID,
-      ...options
-    };
-  
-    return this.http.get<CategoryResponse>(url, { params });
+    const params = new HttpParams({
+      fromObject: {
+        sourceId: this.SOURCE_ID,
+        ...options
+      }
+    });
+
+    return this.http.get<CategoryResponse>(url, {
+      ...this.defaultOptions,
+      params
+    }).pipe(
+      retry(3),
+      catchError(this.handleError)
+    );
+  }
+
+  private handleError(error: any) {
+    console.error('Erro na requisição Lomadee:', error);
+    return throwError(() => error);
   }
 }
