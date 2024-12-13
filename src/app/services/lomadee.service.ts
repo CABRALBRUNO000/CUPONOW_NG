@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { LomadeeResponse } from '../models/lomadee.model';
 import { CategoryResponse } from '../interfaces/category.interface'; 
@@ -19,17 +19,27 @@ export class LomadeeService {
 
   searchOffers(keyword: string): Observable<LomadeeResponse> {
     const url = `${this.API_URL}/${this.APP_TOKEN}/offer/_search`;
+
+    const headers = new HttpHeaders()
+      .set('Accept', 'application/json')
+      .set('Content-Type', 'application/json');
+    
     const params = new HttpParams()
       .set('sourceId', this.SOURCE_ID)
       .set('keyword', keyword)
       .set('sort', this.SORT)
       .set('size', this.SIZE);
 
-    return this.http.get<LomadeeResponse>(url, { params });
+      return this.http.get<LomadeeResponse>(url, { 
+        headers, 
+        params,
+        withCredentials: false
+      });
   }
 
   getCategoryKeyord(keyword: string): Observable<CategoryResponse> {
     const url = `${this.API_URL}/${this.APP_TOKEN}/category/_search`;
+    
     return this.http.get<CategoryResponse>(url, {
       params: {
         sourceId: this.SOURCE_ID,
