@@ -100,13 +100,13 @@
                     class="w-3 h-3 sm:w-4 sm:h-4 rounded-full"
                />
                <span class="text-[10px] sm:text-xs text-text-muted truncate">{{product.store.name}}</span>
-             </div>
+             </div>                                                                                   
                 </div>
 
                 <!-- Preços e CTA -->
                 <div class="flex items-center justify-between">
-                  <div *ngIf="product.discount > 0"  class="flex flex-col min-w-0">
-                    <span class="text-[10px] sm:text-xs text-text-muted line-through truncate">
+                  <div  class="flex flex-col min-w-0">
+                    <span *ngIf="product.discount > 0"  class="text-[10px] sm:text-xs text-text-muted line-through truncate">
                       {{formatPrice(product.priceFrom || product.price)}}
                     </span>
                     <span class="text-xs sm:text-sm font-bold text-primary">

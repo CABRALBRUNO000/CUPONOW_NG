@@ -11,7 +11,8 @@ export class LomadeeService {
   private readonly API_URL = '/api';  // Alterado de https://api.lomadee.com/v3 para /api
   private readonly APP_TOKEN = '1733757952030999173a0';
   private readonly SOURCE_ID = '38322289';
-  private readonly SORT = 'discount';
+  private readonly SORT = 'price';
+  private readonly SIZE = 100;
 
   constructor(private http: HttpClient) { }
 
@@ -21,6 +22,7 @@ export class LomadeeService {
       sourceId: this.SOURCE_ID,
       keyword: keyword,
       sort: this.SORT,
+      size: this.SIZE
     };
 
     return this.http.get<LomadeeResponse>(url, { 

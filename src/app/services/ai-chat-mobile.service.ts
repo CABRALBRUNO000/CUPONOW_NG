@@ -141,22 +141,26 @@ Responda 'NÃO' apenas para mensagens sem relação com produtos ou compras.`],
   private async processOfferRequest(message: string): Promise<{ message: string; products: Offer[] }> {
     try {
       // Primeiro, vamos usar o modelo para extrair a palavra-chave da mensagem
-      const keywordPrompt = `Analise esta mensagem: "${message}"
-        Extraia apenas UMA palavra-chave principal que melhor representa o produto ou categoria desejada.
-        Regras:
-        - Retorne apenas uma única palavra
-        - Sem pontuação
-        - Sem artigos ou preposições
-        - Sem explicações adicionais
-        - Ignorar palavras como "oferta", "desconto", "promoção"
-        - Foque no produto/categoria principal
+      const keywordPrompt =  `Analise esta mensagem: "${message}"
+      Extraia apenas UMA palavra-chave principal que melhor representa o produto ou categoria desejada.
+      Regras:
+      - Retorne apenas uma única palavra
+      - Use sempre o singular (ex: tênis, celular, camiseta, notebook)
+      - Sem pontuação
+      - Sem artigos ou preposições
+      - Sem explicações adicionais
+      - Ignorar palavras como "oferta", "desconto", "promoção"
+      - Foque no produto/categoria principal
     
-        Exemplo:
-        Mensagem: "quero ver ofertas de tênis nike"
-        Resposta: nike
+      Exemplo:
+      Mensagem: "quero ver ofertas de tênis nike"
+      Resposta: tênis
     
-        Mensagem: "procuro promoções de celular"
-        Resposta: celular`;
+      Mensagem: "procuro promoções de celulares"
+      Resposta: celular
+      
+      Mensagem: "quero comprar camisetas"
+      Resposta: camiseta`;
 
       const keywordResponse = await this.model.call([{ type: 'human', content: keywordPrompt }]);
       const keyword = keywordResponse.content.toString().trim();
