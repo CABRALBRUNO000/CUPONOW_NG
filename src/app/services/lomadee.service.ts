@@ -3,12 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { LomadeeResponse } from '../models/lomadee.model';
 import { CategoryResponse } from '../interfaces/category.interface'; 
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LomadeeService {
-  private readonly API_URL = '/api';  // Alterado de https://api.lomadee.com/v3 para /api
+  private readonly API_URL = environment.apiUrl;
   private readonly APP_TOKEN = '1733757952030999173a0';
   private readonly SOURCE_ID = '38322289';
   private readonly SORT = 'price';
