@@ -176,6 +176,11 @@ export class MobileChatComponent implements OnInit {
   trackByProducts(index: number, item: Offer): string | number{
     return item.id || index.toString();
 
-  }}
+  }
+  openStoreLink(url: string): void {
+    window.open(url, '_blank', 'noopener,noreferrer');
+  }
+  
+}
 
 
