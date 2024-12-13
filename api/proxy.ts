@@ -1,9 +1,8 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { createProxyMiddleware, Options } from 'http-proxy-middleware';
+import proxy from 'express-http-proxy';
+import { NextFunction } from 'express';
 
-export default function handler(req: VercelRequest, res: VercelResponse) {
-  const target = 'https://api.lomadee.com';
-  
+export default function handler(req: VercelRequest, res: VercelResponse, next: NextFunction) {
   if (req.method === 'OPTIONS') {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
@@ -13,14 +12,9 @@ export default function handler(req: VercelRequest, res: VercelResponse) {
     return;
   }
 
-  const proxyOptions: Options = {
-    target,
-    changeOrigin: true,
-    pathRewrite: {
-      '^/api': '/v3'
+  return proxy('https://api.lomadee.com', {
+    proxyReqPathResolver: (req) => {
+      return req.url.replace('/api', '/v3');
     }
-  };
-
-  createProxyMiddleware(proxyOptions)(req, res);
+  })(req as any, res as any, next);
 }
-
