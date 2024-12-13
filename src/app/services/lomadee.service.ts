@@ -33,15 +33,19 @@ export class LomadeeService {
       .set('keyword', encodeURIComponent(keyword))
       .set('sort', this.SORT)
       .set('size', this.SIZE);
-
+  
     return this.http.get<LomadeeResponse>(url, { 
       ...this.defaultOptions,
       params
     }).pipe(
-      retry(3),
-      catchError(this.handleError)
+      retry(2),
+      catchError(error => {
+        console.error('Erro na requisição Lomadee:', error);
+        return throwError(() => error);
+      })
     );
   }
+  
 
   getCategoryKeyord(keyword: string): Observable<CategoryResponse> {
     const url = `${this.API_URL}/${this.APP_TOKEN}/category/_search`;
