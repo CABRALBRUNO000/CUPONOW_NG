@@ -5,6 +5,9 @@
     "changeOrigin": true,
     "pathRewrite": {
       "^/api": "/v3"
+    },
+    "headers": {
+      "Origin": "https://api.lomadee.com"
     }
   }
 }
