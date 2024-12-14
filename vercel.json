@@ -1,24 +1,16 @@
 {
     "rewrites": [
-      {
-        "source": "/api/lomadee/:path*",
-        "destination": "https://api.lomadee.com/v3/:path*"
-      },
-      {
-        "source": "/_search",
-        "destination": "/api/_search"
-      }
+      { "source": "/api/:match*", "destination": "https://api.endpoint.url/:match*" }
+  
     ],
     "headers": [
       {
-        "source": "/(.*)",
+        "source": "api/(.*)",
         "headers": [
-          { "key": "Access-Control-Allow-Origin", "value": "*" },
-          { "key": "Access-Control-Allow-Methods", "value": "GET, POST, PUT, DELETE, OPTIONS, HEAD" },
-          { "key": "Access-Control-Allow-Headers", "value": "X-Requested-With, Content-Type, Authorization, Origin, Accept" },
           { "key": "Access-Control-Allow-Credentials", "value": "true" },
-          { "key": "Access-Control-Max-Age", "value": "86400" }
+          { "key": "Access-Control-Allow-Origin", "value": "*" },
+          { "key": "Access-Control-Allow-Methods", "value": "GET,OPTIONS,PATCH,DELETE,POST,PUT" }
         ]
       }
     ]
-}
+  }
