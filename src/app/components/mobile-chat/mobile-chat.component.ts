@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { Message } from '../../models/message.model';
 import { Offer } from '../../models/offer.model';
-import { AiChatMobileService } from '../../services/ai-chat-mobile.service';
+import { AiChatService } from '../../services/ai-chat-mobile.service';
 import { LoggerService } from '../../services/logger.service';
 
 interface ChatMessage extends Message {
@@ -39,15 +39,15 @@ export class MobileChatComponent implements OnInit {
     botName: 'Assistente CuponAI',
     botDescription: 'Encontre as melhores ofertas'
   };
-  
+
 
 
   constructor(
-    private aiChatMobileService: AiChatMobileService,
+    private aiChatMobileService: AiChatService,
     private router: Router,
     private logger: LoggerService
 
-  ) {}
+  ) { }
 
 
   ngOnInit(): void {
@@ -104,7 +104,7 @@ export class MobileChatComponent implements OnInit {
       sender: 'ai',
       products: response.products || []
     });
-    
+
     // Garante que o scroll aconteça após a renderização do DOM
     setTimeout(() => {
       this.scrollToBottom();
@@ -121,12 +121,12 @@ export class MobileChatComponent implements OnInit {
 
   private finalizeSendMessage(): void {
     this.isLoading = false;
-    
+
     // Use requestAnimationFrame para garantir foco após renderização
     requestAnimationFrame(() => {
       if (this.messageInput && this.messageInput.nativeElement) {
         const inputElement = this.messageInput.nativeElement;
-        
+
         // Foco sem rolagem
         inputElement.focus({
           preventScroll: true
@@ -134,7 +134,7 @@ export class MobileChatComponent implements OnInit {
       }
     });
   }
-  
+
 
   private scrollToBottom(): void {
     try {
@@ -151,14 +151,14 @@ export class MobileChatComponent implements OnInit {
   }
 
   formatPrice(price: number): string {
-    return price.toLocaleString('pt-BR', { 
-      style: 'currency', 
-      currency: 'BRL' 
+    return price.toLocaleString('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
     });
   }
 
   openProductLink(product: Offer): void {
-    const url = product.link || 
+    const url = product.link ||
       `https://www.google.com/search?q=${encodeURIComponent(`${product.name} oferta`)}`;
     window.open(url, '_blank');
   }
@@ -172,15 +172,15 @@ export class MobileChatComponent implements OnInit {
   trackByMessages(index: number, item: ChatMessage): number {
     return index;
   }
-  
-  trackByProducts(index: number, item: Offer): string | number{
+
+  trackByProducts(index: number, item: Offer): string | number {
     return item.id || index.toString();
 
   }
   openStoreLink(url: string): void {
     window.open(url, '_blank', 'noopener,noreferrer');
   }
-  
+
 }
 
 

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Offer } from '../../models/offer.model';
-import { AiChatMobileService } from '../../services/ai-chat-mobile.service';
+import { AiChatService } from '../../services/ai-chat-mobile.service';
 import { Router, RouterModule } from '@angular/router';
 
 @Component({
@@ -14,7 +14,7 @@ export class ProductsListComponent implements OnInit {
   products: Offer[] = [];
 
   constructor(
-    private aiChatMobileService: AiChatMobileService,
+    private aiChatMobileService: AiChatService,
     private router: Router
   ) {
     // Pegue os dados da navegação aqui
@@ -34,9 +34,9 @@ export class ProductsListComponent implements OnInit {
   }
 
   formatPrice(price: number): string {
-    return price.toLocaleString('pt-BR', { 
-      style: 'currency', 
-      currency: 'BRL' 
+    return price.toLocaleString('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
     });
   }
 
@@ -52,5 +52,5 @@ export class ProductsListComponent implements OnInit {
     const imgElement = event.target as HTMLImageElement;
     imgElement.src = 'assets/images/placeholder.jpg';
   }
-  
+
 }

@@ -15,7 +15,7 @@ import { RagService } from './rag.service';
 @Injectable({
   providedIn: 'root'
 })
-export class AiChatMobileService {
+export class AiChatService {
   private intentChain!: ConversationChain;
   private conversationChain!: ConversationChain;
   private keywordChain!: ConversationChain;
