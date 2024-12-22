@@ -24,6 +24,7 @@ export interface Installment {
 }
 
 export interface Store {
+    rating: any;
     id: number;
     name: string;
     thumbnail: string;

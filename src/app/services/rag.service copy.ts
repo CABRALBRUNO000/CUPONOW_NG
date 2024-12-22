@@ -1,86 +1,118 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { loadQAChain } from 'langchain/chains';
+import { Observable, from } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
+
 import { ChatOpenAI } from '@langchain/openai';
-import { PromptTemplate } from '@langchain/core/prompts';
+import { OpenAIEmbeddings } from '@langchain/openai';
+import { MemoryVectorStore } from 'langchain/vectorstores/memory';
+import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { Document } from 'langchain/document';
+
 import { LomadeeService } from './lomadee.service';
-import { firstValueFrom } from 'rxjs';
-import { Category, CategoryResponse } from '../interfaces/category.interface';
+import { OpenAIService } from './openai.service';
 import { Offer } from '../models/offer.model';
 import { LomadeeResponse } from '../models/lomadee.model';
-import { OpenAIService } from './openai.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class RagService {
-    private jsonData: LomadeeResponse;
-    private chain: any;
+    private chatModel: ChatOpenAI;
+    private embeddings: OpenAIEmbeddings;
+    private textSplitter: RecursiveCharacterTextSplitter;
 
     constructor(
         private lomadeeService: LomadeeService,
         private openAIService: OpenAIService
-
     ) {
-        this.jsonData = {} as LomadeeResponse;
-        this.setupQuestionAnsweringChain();
+        this.chatModel = this.openAIService.getChatModel();
+        this.embeddings = this.openAIService.getEmbeddings();
+        this.textSplitter = new RecursiveCharacterTextSplitter({
+            chunkSize: 500,
+            chunkOverlap: 50
+        });
     }
 
-    private setupQuestionAnsweringChain(): void {
-        const llm = this.openAIService.getChatModel();
-        const prompt = new PromptTemplate({
-            template: `Analise a mensagem do usuário: "{userMessage}"
-                    
-            A partir das ofertas fornecidas, identifique as 5 mais relevantes considerando:
-            1. Correspondência com a necessidade expressa pelo usuário
-            2. Maior percentual de desconto
-            3. Melhor preço final
+    // Método para preparar documentos com contexto enriquecido
+    private async prepareDocuments(offers: Offer[]): Promise<Document[]> {
+        const documentsPromises = offers.map(async (offer) => {
+            const enrichedContent = this.createEnrichedOfferContent(offer);
+            const splitDocuments = await this.textSplitter.createDocuments([enrichedContent]);
             
-            Retorne um array com as ofertas seguindo exatamente esta estrutura:
-            [{{
-                "id": "string",
-                "name": "string",
-                "category": {{
-                    "id": "number",
-                    "name": "string",
-                    "link": "string"
-                }},
-                "link": "string",
-                "thumbnail": "string",
-                "price": "number",
-                "priceFrom": "number",
-                "discount": "number",
-                "installment": {{
-                    "quantity": "number",
-                    "value": "number"
-                }},
-                "store": {{
-                    "id": "number",
-                    "name": "string",
-                    "thumbnail": "string",
-                    "link": "string",
-                    "invisible": "boolean",
-                    "needPermission": "boolean"
-                }},
-                "advertiserCategory": "string"
-            }}]`,
-            inputVariables: ['userMessage']
+            return splitDocuments.map(doc => new Document({
+                pageContent: doc.pageContent,
+                metadata: {
+                    offerId: offer.id,
+                    name: offer.name,
+                    price: offer.price,
+                    discount: offer.discount,
+                    category: offer.category?.name,
+                    store: offer.store?.name
+                }
+            }));
         });
-        
-        this.chain = loadQAChain(llm, {
-            type: 'map_reduce',
-            combineMapPrompt: prompt,
-            combinePrompt: prompt
-        });
+
+        const nestedDocuments = await Promise.all(documentsPromises);
+        return nestedDocuments.flat();
     }
 
-    public async getRelevantOffers(userMessage: string, keyword: string): Promise<Offer[]> {
-        this.jsonData = await firstValueFrom(this.lomadeeService.searchOffers(keyword));
+    // Cria conteúdo enriquecido para melhor recuperação
+    private createEnrichedOfferContent(offer: Offer): string {
+        return `
+            Oferta detalhada: ${offer.name}
+            Descrição completa para busca semântica
+            Categoria: ${offer.category?.name || 'Não informada'}
+            Preço original: R$ ${offer.priceFrom || 'N/A'}
+            Preço atual: R$ ${offer.price}
+            Desconto: ${offer.discount}%
+            Loja: ${offer.store?.name || 'Não informada'}
+            Parcelamento: ${offer.installment?.quantity}x de R$ ${offer.installment?.value}
+            Palavras-chave: ${this.extractKeywords(offer)}
+        `;
+    }
 
-        const documents = this.jsonData.offers.map(offer => new Document({ pageContent: JSON.stringify(offer) }));
-        const result = await this.chain.call({ userMessage, input_documents: documents });
-        const parsedResults = JSON.parse(result.answer) as Offer[];
-        return parsedResults.sort((a, b) => (b.discount || 0) - (a.discount || 0));
+    // Extrai palavras-chave da oferta
+    private extractKeywords(offer: Offer): string {
+        const keywords = [
+            offer.name,
+            offer.category?.name,
+            offer.store?.name,
+            offer.advertiserCategory
+        ].filter(Boolean).join(' ');
+        return keywords;
+    }
+
+    // Método principal de RAG
+    public getRelevantOffers(userMessage: string, keyword: string): Observable<Offer[]> {
+        return this.lomadeeService.searchOffers(keyword).pipe(
+            switchMap(async (lomadeeResponse: LomadeeResponse) => {
+                // Prepara documentos com contexto
+                const documents = await this.prepareDocuments(lomadeeResponse.offers);
+                
+                // Cria vector store
+                const vectorStore = await MemoryVectorStore.fromDocuments(
+                    documents, 
+                    this.embeddings
+                );
+
+                // Realiza busca semântica
+                const similarDocs = await vectorStore.similaritySearch(userMessage, 5);
+                
+                // Extrai ofertas dos documentos similares
+                const relevantOfferIds = Array.from(
+                    new Set(similarDocs.map(doc => doc.metadata['offerId']))
+                );
+
+                // Filtra ofertas originais
+                const relevantOffers = lomadeeResponse.offers.filter(offer => 
+                    relevantOfferIds.includes(offer.id)
+                );
+
+                // Se não encontrar ofertas relevantes, retorna as 5 primeiras
+                return relevantOffers.length > 0 
+                    ? relevantOffers 
+                    : lomadeeResponse.offers.slice(0, 5);
+            })
+        );
     }
 }
