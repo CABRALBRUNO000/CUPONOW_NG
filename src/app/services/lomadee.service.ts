@@ -16,12 +16,12 @@ export class LomadeeService {
 
   constructor(private http: HttpClient) { }
 
-  searchOffers(keyword: string, page =1 ): Observable<LomadeeResponse> {
+  searchOffers(keyword: string, page =1, sort = 'discount' ): Observable<LomadeeResponse> {
     const url = `${this.API_URL}/${this.APP_TOKEN}/offer/_search`;
     const params = {
       sourceId: this.SOURCE_ID,
       keyword: keyword,
-      sort: this.SORT,
+      sort: sort || this.SORT,
       size: this.SIZE,
       page: page
     };

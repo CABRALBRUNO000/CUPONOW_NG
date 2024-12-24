@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { Message } from '../../models/message.model';
 import { Offer } from '../../models/offer.model';
-import { AiChatService } from '../../services/ai-chat-mobile.service';
+import { AiChatService } from '../../services/ai-chat.service';
 import { LoggerService } from '../../services/logger.service';
 
 interface ChatMessage extends Message {
@@ -31,7 +31,7 @@ export class MobileChatComponent implements OnInit {
   messages: ChatMessage[] = [];
   newMessage = '';
   isLoading = false;
-  products: Offer[] = [];
+  produtos: Offer[] = [];
 
   // Adicionar configuração
   chatConfig: ChatConfig = {
@@ -56,7 +56,7 @@ export class MobileChatComponent implements OnInit {
   }
 
   private loadExistingHistory(): void {
-    const existingHistory = this.aiChatMobileService.getMessageHistory();
+    const existingHistory = this.aiChatMobileService.obterHistoricoMensagens();
     this.messages = existingHistory.map((msg: any) => ({
       ...msg,
       products: []
@@ -66,8 +66,8 @@ export class MobileChatComponent implements OnInit {
   }
 
   private subscribeToProducts(): void {
-    this.aiChatMobileService.products$.subscribe(products => {
-      this.products = products;
+    this.aiChatMobileService.produtos$.subscribe(produtos => {
+      this.produtos = produtos;
     });
   }
 
@@ -80,7 +80,7 @@ export class MobileChatComponent implements OnInit {
     this.logger.info('Enviando mensagem:', trimmedMessage);
 
     try {
-      const response = await this.aiChatMobileService.sendMessage(trimmedMessage);
+      const response = await this.aiChatMobileService.enviarMensagem(trimmedMessage);
       this.addAiMessage(response);
       this.logger.info('Resposta recebida:', response);
 
@@ -166,7 +166,7 @@ export class MobileChatComponent implements OnInit {
   navigateToProductsList(): void {
     const allProducts = this.messages
       .reduce((acc: Offer[], msg) => [...acc, ...(msg.products || [])], []);
-    this.aiChatMobileService.setProducts(allProducts);
+    this.aiChatMobileService.definirProdutos(allProducts);
     this.router.navigate(['/products-list']);
   }
   trackByMessages(index: number, item: ChatMessage): number {

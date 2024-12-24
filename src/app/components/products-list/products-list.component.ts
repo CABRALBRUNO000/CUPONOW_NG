@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Offer } from '../../models/offer.model';
-import { AiChatService } from '../../services/ai-chat-mobile.service';
+import { AiChatService } from '../../services/ai-chat.service';
 import { Router, RouterModule } from '@angular/router';
 
 @Component({
@@ -21,13 +21,13 @@ export class ProductsListComponent implements OnInit {
     const navigation = this.router.getCurrentNavigation();
     if (navigation?.extras.state) {
       this.products = navigation.extras.state['products'];
-      this.aiChatMobileService.setProducts(this.products);
+      this.aiChatMobileService.definirProdutos(this.products);
     }
   }
 
   ngOnInit(): void {
     // Inscreva-se para mudanças nos produtos
-    this.aiChatMobileService.products$.subscribe(products => {
+    this.aiChatMobileService.produtos$.subscribe(products => {
       this.products = products;
       console.log('Products updated:', this.products);
     });

@@ -8,9 +8,10 @@ import { catchError, map, mergeMap } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Offer } from '../models/offer.model';
 import { KeywordObject } from '../models/keyword.model';
+import { Ofertas } from '../models/ofertas.model';
 import { LomadeeService } from './lomadee.service';
 import { LoggerService } from './logger.service';
-import { ServicoTratamentoErros } from './tratamentoErros.service';
+import { ServicoTratamentoErros } from './tratamento-Erros.service';
 import { environment } from '../../environments/environment';
 import { LomadeeResponse } from '../models/lomadee.model';
 
@@ -20,15 +21,14 @@ import { LomadeeResponse } from '../models/lomadee.model';
 export class RagService {
     private readonly LIMITE_OFERTAS = 500;
     private readonly LIMITE_RESULTADOS = 20;
-    private readonly LIMITE_OFERTAS_FINAIS = 5;
+    private readonly LIMITE_OFERTAS_FINAIS = 15;
 
     private embeddings!: HuggingFaceInferenceEmbeddings;
     private divisorTexto!: RecursiveCharacterTextSplitter;
 
     constructor(
         private servicoLomadee: LomadeeService,
-        private servicoLog: LoggerService,
-        private servicoErros: ServicoTratamentoErros
+        private servicoErros: ServicoTratamentoErros,
     ) {
         this.inicializarServico();
     }
@@ -57,7 +57,97 @@ export class RagService {
         }
     }
 
-    public obterOfertasRelevantes(mensagemUsuario: string, objetoPalavrasChave: KeywordObject): Observable<Offer[]> {
+    // public obterOfertasRelevantes(mensagemUsuario: string, objetoPalavrasChave: KeywordObject): Observable<Offer[]> {
+    //     try {
+    //         if (!mensagemUsuario || !objetoPalavrasChave?.keywords?.length) {
+    //             throw {
+    //                 name: 'ValidationError',
+    //                 message: 'Mensagem do usuário e palavras-chave são obrigatórias'
+    //             };
+    //         }
+
+    //         return from(this.obterTodasOfertas(objetoPalavrasChave)).pipe(
+    //             mergeMap(ofertas => from(this.processarEFiltrarOfertas(ofertas, mensagemUsuario))),
+    //             catchError(erro => this.servicoErros.tratarErro(erro, 'RagService', 'obterOfertasRelevantes'))
+    //         );
+    //     } catch (erro) {
+    //         return this.servicoErros.tratarErro(erro, 'RagService', 'obterOfertasRelevantes');
+    //     }
+    // }
+
+
+    // private async buscarOfertasPorPalavrasChave(palavrasChave: string[]): Promise<LomadeeResponse[]> {
+    //     try {
+    //         if (!palavrasChave?.length) {
+    //             throw {
+    //                 isBusinessError: true,
+    //                 message: 'Lista de palavras-chave vazia'
+    //             };
+    //         }
+    
+    //         const respostas: LomadeeResponse[] = [];
+    //         const palavrasChaveValidas: string[] = [];
+    
+    //         // Primeiro, busca por todas as palavras exceto a primeira
+    //         for (let i = 1; i < palavrasChave.length; i++) {
+    //             try {
+    //                 const resposta = await firstValueFrom(
+    //                     this.servicoLomadee.searchOffers(palavrasChave[i], 1)
+    //                 );
+    
+    //                 if (resposta.offers?.length > 0) {
+    //                     palavrasChaveValidas.push(palavrasChave[i]);
+    //                     respostas.push(resposta);
+    //                 }
+    //             } catch (erro) {
+    //                 if (erro instanceof HttpErrorResponse) {
+    //                     if (erro.status === 404) continue;
+    //                     throw {
+    //                         isExternalServiceError: true,
+    //                         message: `Falha na API Lomadee: ${erro.message}`,
+    //                         originalError: erro
+    //                     };
+    //                 }
+    //                 throw erro;
+    //             }
+    //         }
+    
+    //         // Se não encontrou nada, tenta com a primeira palavra-chave
+    //         if (respostas.length === 0 && palavrasChave[0]) {
+    //             try {
+    //                 const resposta = await firstValueFrom(
+    //                     this.servicoLomadee.searchOffers(palavrasChave[0], 1, "price")
+    //                 );
+    
+    //                 if (resposta.offers?.length > 0) {
+    //                     palavrasChaveValidas.push(palavrasChave[0]);
+    //                     respostas.push(resposta);
+    //                 }
+    //             } catch (erro) {
+    //                 if (erro instanceof HttpErrorResponse && erro.status !== 404) {
+    //                     throw {
+    //                         isExternalServiceError: true,
+    //                         message: `Falha na API Lomadee: ${erro.message}`,
+    //                         originalError: erro
+    //                     };
+    //                 }
+    //             }
+    //         }
+    
+    //         if (palavrasChaveValidas.length === 0) {
+    //             throw {
+    //                 isBusinessError: true,
+    //                 message: 'Nenhuma palavra-chave válida encontrada'
+    //             };
+    //         }
+    
+    //         return respostas;
+    //     } catch (erro) {
+    //         throw this.servicoErros.tratarErro(erro, 'RagService', 'buscarOfertasPorPalavrasChave');
+    //     }
+    // }
+
+    public obterOfertasRelevantes(mensagemUsuario: string, objetoPalavrasChave: KeywordObject): Observable<{ offers: Offer[], isGenericSearch: boolean }> {
         try {
             if (!mensagemUsuario || !objetoPalavrasChave?.keywords?.length) {
                 throw {
@@ -65,9 +155,17 @@ export class RagService {
                     message: 'Mensagem do usuário e palavras-chave são obrigatórias'
                 };
             }
-
+    
             return from(this.obterTodasOfertas(objetoPalavrasChave)).pipe(
-                mergeMap(ofertas => from(this.processarEFiltrarOfertas(ofertas, mensagemUsuario))),
+                mergeMap(async ({ offers, isGenericSearch }) => {
+                    // Verifica se há ofertas antes de processar
+                    if (!offers || offers.length === 0) {
+                        return { offers: [], isGenericSearch };
+                    }
+                    
+                    const processedOffers = await this.processarEFiltrarOfertas(offers, mensagemUsuario);
+                    return { offers: processedOffers, isGenericSearch };
+                }),
                 catchError(erro => this.servicoErros.tratarErro(erro, 'RagService', 'obterOfertasRelevantes'))
             );
         } catch (erro) {
@@ -75,58 +173,60 @@ export class RagService {
         }
     }
 
-    private async buscarOfertasPorPalavrasChave(palavrasChave: string[]): Promise<LomadeeResponse[]> {
+    private async buscarOfertasPorPalavrasChave(palavrasChave: string[]): Promise<Ofertas> {
         try {
             if (!palavrasChave?.length) {
-                throw {
-                    isBusinessError: true,
-                    message: 'Lista de palavras-chave vazia'
-                };
+                return { responses: [], isGenericSearch: false };
             }
-
+    
             const respostas: LomadeeResponse[] = [];
-            const ofertasVistas = new Set<string>();
             const palavrasChaveValidas: string[] = [];
-
-            for (const palavraChave of palavrasChave) {
+    
+            for (let i = 1; i < palavrasChave.length; i++) {
                 try {
                     const resposta = await firstValueFrom(
-                        this.servicoLomadee.searchOffers(palavraChave, 1)
+                        this.servicoLomadee.searchOffers(palavrasChave[i], 1, "price")
                     );
-
+    
                     if (resposta.offers?.length > 0) {
-                        palavrasChaveValidas.push(palavraChave);
+                        palavrasChaveValidas.push(palavrasChave[i]);
                         respostas.push(resposta);
                     }
                 } catch (erro) {
-                    if (erro instanceof HttpErrorResponse) {
-                        // Se for erro 404, apenas continua o loop
-                        if (erro.status === 404) {
-                            continue;
-                        }
-                        // Para outros erros HTTP, lança exceção
-                        throw {
-                            isExternalServiceError: true,
-                            message: `Falha na API Lomadee: ${erro.message}`,
-                            originalError: erro
-                        };
+                    if (erro instanceof HttpErrorResponse && erro.status === 404) {
+                        continue;
                     }
                     throw erro;
                 }
             }
-
-            if (palavrasChaveValidas.length === 0) {
-                throw {
-                    isBusinessError: true,
-                    message: 'Nenhuma palavra-chave válida encontrada'
-                };
+    
+            if (respostas.length > 0) {
+                return { responses: respostas, isGenericSearch: false };
             }
-
-            return respostas;
+    
+            if (palavrasChave[0]) {
+                try {
+                    const resposta = await firstValueFrom(
+                        this.servicoLomadee.searchOffers(palavrasChave[0], 1)
+                    );
+    
+                    if (resposta.offers?.length > 0) {
+                        return { responses: [resposta], isGenericSearch: true };
+                    }
+                } catch (erro) {
+                    if (erro instanceof HttpErrorResponse && erro.status !== 404) {
+                        throw erro;
+                    }
+                }
+            }
+    
+            return { responses: [], isGenericSearch: false };
+            
         } catch (erro) {
             throw this.servicoErros.tratarErro(erro, 'RagService', 'buscarOfertasPorPalavrasChave');
         }
     }
+    
 
     private async processarEFiltrarOfertas(offers: Offer[], userMessage: string): Promise<Offer[]> {
         try {
@@ -226,12 +326,24 @@ export class RagService {
         }
     }
 
-    private async obterTodasOfertas(objetoPalavrasChave: KeywordObject): Promise<Offer[]> {
-        const respostas = await this.buscarOfertasPorPalavrasChave(objetoPalavrasChave.keywords);
-        const todasOfertas = respostas.flatMap(resposta => resposta.offers || []);
-        return this.filtrarEOrdenarOfertas(todasOfertas);
+    // private async obterTodasOfertas(objetoPalavrasChave: KeywordObject): Promise<Offer[]> {
+    //     const respostas = await this.buscarOfertasPorPalavrasChave(objetoPalavrasChave.keywords);
+    //     const todasOfertas = respostas.flatMap(resposta => resposta.offers || []);
+    //     return this.filtrarEOrdenarOfertas(todasOfertas);
+    // }
+    private async obterTodasOfertas(objetoPalavrasChave: KeywordObject): Promise<{ offers: Offer[], isGenericSearch: boolean }> {
+        const resultado: Ofertas = await this.buscarOfertasPorPalavrasChave(objetoPalavrasChave.keywords);
+        
+        if (resultado.responses.length === 0) {
+            return { offers: [], isGenericSearch: false };
+        }
+    
+        const todasOfertas = resultado.responses.flatMap(resposta => resposta.offers || []);
+        const ofertasFiltradas = this.filtrarEOrdenarOfertas(todasOfertas);
+    
+        return { offers: ofertasFiltradas, isGenericSearch: resultado.isGenericSearch };
     }
-
+    
     private calcularPontuacaoDeRelevancia(offer: Offer, userMessage: string, doc: Document): number {
         let score = 0;
 
@@ -290,16 +402,29 @@ export class RagService {
 
     private filtrarEOrdenarOfertas(offers: Offer[]): Offer[] {
         const uniqueOffers = new Map<string, Offer>();
-
+    
         offers.forEach(offer => {
-            const key = `${offer.name.toLowerCase().trim()}_${offer.price}`;
-
-            if (!uniqueOffers.has(key)) {
-                uniqueOffers.set(key, offer);
+            const nomeProduto = offer.name.toLowerCase().trim();
+            const precoFinal = offer.discount ? 
+                offer.price * (1 - offer.discount / 100) : 
+                offer.price;
+    
+            if (!uniqueOffers.has(nomeProduto)) {
+                uniqueOffers.set(nomeProduto, offer);
+            } else {
+                const ofertaExistente = uniqueOffers.get(nomeProduto)!;
+                const precoExistente = ofertaExistente.discount ? 
+                    ofertaExistente.price * (1 - ofertaExistente.discount / 100) : 
+                    ofertaExistente.price;
+    
+                if (precoFinal < precoExistente) {
+                    uniqueOffers.set(nomeProduto, offer);
+                }
             }
         });
-
+    
         return Array.from(uniqueOffers.values())
             .sort((a, b) => (b.discount || 0) - (a.discount || 0));
     }
+    
 }
